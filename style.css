@@ -1,0 +1,36 @@
+/* Stili per il chatbot - verranno aggiunti qui */
+
+/* Esempio: Stile per il contenitore principale della chat */
+.chatbot-container {
+    position: fixed;
+    bottom: 80px; /* Spazio dal bottone flottante */
+    right: 20px;
+    width: 350px;
+    max-height: 500px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none; /* Nascosto di default */
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Stili per il bottone flottante di apertura */
+.chatbot-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} 
