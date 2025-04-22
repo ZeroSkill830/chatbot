@@ -1,32 +1,29 @@
 (function() {
     console.log("Loader script eseguito.");
 
-    // -------- SVILUPPO LOCALE --------
-    // Commentiamo l'URL di GitHub Pages
-    // const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- COMMENTATO
-    // Usiamo percorsi relativi per il caricamento locale
-    const useRelativePaths = false; // Imposta a false per tornare a GitHub Pages
-    const GITHUB_PAGES_BASE_URL = useRelativePaths ? '.' : 'https://zeroskill830.github.io/chatbot'; // Usa '.' come base per relativo
-    // ---------------------------------
+    // -------- URL ASSOLUTO PER HOSTING --------
+    // URL base per gli asset ospitati su GitHub Pages
+    const BASE_URL = "https://zeroskill830.github.io/chatbot"; 
+    // -----------------------------------------
 
     // Lista degli script da caricare in ordine
     const chatbotScripts = [
-        `${GITHUB_PAGES_BASE_URL}/chatbot-ui.js`,          // Prima la UI
-        `${GITHUB_PAGES_BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
-        `${GITHUB_PAGES_BASE_URL}/chatbot-core.js`          // Infine il core che usa gli altri due
+        `${BASE_URL}/chatbot-ui.js`,          // Prima la UI
+        `${BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
+        `${BASE_URL}/chatbot-core.js`          // Infine il core che usa gli altri due
     ];
     
     // Lista dei CSS da caricare (variables.css per primo!)
     const chatbotStyleURLs = [
-        `${GITHUB_PAGES_BASE_URL}/styles/variables.css`, // <-- CARICA PRIMA!
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-container.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-header.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-message-area.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-message.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-footer.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-input.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-send-button.css`,
-        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-toggle-button.css`,
+        `${BASE_URL}/styles/variables.css`, // <-- CARICA PRIMA!
+        `${BASE_URL}/styles/chatbot-container.css`,
+        `${BASE_URL}/styles/chatbot-header.css`,
+        `${BASE_URL}/styles/chatbot-message-area.css`,
+        `${BASE_URL}/styles/chatbot-message.css`,
+        `${BASE_URL}/styles/chatbot-footer.css`,
+        `${BASE_URL}/styles/chatbot-input.css`,
+        `${BASE_URL}/styles/chatbot-send-button.css`,
+        `${BASE_URL}/styles/chatbot-toggle-button.css`,
         // Aggiungere qui eventuali altri file CSS globali se necessario
     ];
 

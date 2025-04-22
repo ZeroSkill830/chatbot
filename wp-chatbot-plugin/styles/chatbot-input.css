@@ -1,0 +1,24 @@
+/* Stili per il campo di input del messaggio */
+
+.chatbot-input {
+    flex-grow: 1; /* Occupa lo spazio rimanente nel footer */
+    border: 1px solid var(--chatbot-border-color); /* Usa variabile */
+    outline: none; /* Rimuove l'outline al focus (gestiremo focus diversamente) */
+    padding: 8px 12px; /* Padding interno */
+    border-radius: var(--chatbot-border-radius-input); /* Usa variabile */
+    background-color: var(--chatbot-bg); /* Usa variabile (o un grigio chiarissimo?) */
+    font-size: 0.95rem; /* Dimensione font consistente con i messaggi */
+    line-height: 1.5; /* Altezza linea */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Transizione per focus */
+    color: var(--chatbot-text-secondary); /* Usa variabile */
+}
+
+.chatbot-input::placeholder {
+    color: var(--chatbot-placeholder-color); /* Usa variabile */
+    opacity: 1; /* Assicura visibilità */
+}
+
+.chatbot-input:focus {
+    border-color: var(--chatbot-accent-color); /* Usa variabile */
+    box-shadow: 0 0 0 0.2rem var(--chatbot-focus-shadow); /* Usa variabile */
+} 

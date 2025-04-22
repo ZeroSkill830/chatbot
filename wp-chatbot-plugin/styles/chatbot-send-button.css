@@ -1,0 +1,36 @@
+/* Stili per il bottone di invio messaggio */
+
+.chatbot-send-button {
+    background: none; /* Rimuove sfondo */
+    border: none; /* Rimuove bordo */
+    padding: 6px; /* Padding per area cliccabile e spazio icona */
+    cursor: pointer;
+    color: var(--chatbot-accent-color); /* Usa variabile */
+    font-size: 1.3rem; /* Dimensione per un'icona (es. da font o SVG) */
+    line-height: 1; /* Allineamento verticale */
+    display: flex; /* Per centrare eventuale icona interna */
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.1s ease;
+}
+
+/* Potremmo usare un carattere icona o un SVG */
+/* Esempio con carattere (assicurati che il font lo supporti o usa FontAwesome etc.) */
+/* .chatbot-send-button::before {
+    content: '\27A4'; // Esempio: freccia
+} */
+
+/* Oppure, se il testo "Invia" è mantenuto dal JS: */
+.chatbot-send-button {
+   font-weight: 600; /* Rendi il testo "Invia" un po' più visibile */
+   font-size: 0.9rem;
+   padding: 8px 10px;
+}
+
+.chatbot-send-button:hover {
+    color: var(--chatbot-accent-color-hover); /* Usa variabile */
+}
+
+.chatbot-send-button:active {
+    transform: scale(0.95); /* Leggero effetto pressione */
+} 

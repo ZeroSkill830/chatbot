@@ -1,0 +1,33 @@
+/* Stili per l'header del chatbot */
+
+.chatbot-header {
+    padding: 12px 16px;
+    background-color: var(--chatbot-header-bg); /* Usa variabile */
+    border-bottom: 1px solid var(--chatbot-border-color); /* Usa variabile */
+    display: flex;
+    justify-content: space-between; /* Titolo a sinistra, bottone a destra */
+    align-items: center;
+    flex-shrink: 0; /* Impedisce all'header di restringersi */
+}
+
+.chatbot-header span {
+    font-weight: 600; /* Titolo leggermente in grassetto */
+    font-size: 1rem;
+    color: var(--chatbot-text-secondary); /* Usa variabile (o primary?) */
+}
+
+.chatbot-header .chatbot-close-button {
+    background: none;
+    border: none;
+    font-size: 1.4rem; /* Dimensione icona (×) */
+    line-height: 1; /* Per allineamento verticale preciso */
+    padding: 0 4px; /* Piccolo padding per area cliccabile */
+    cursor: pointer;
+    color: var(--chatbot-close-button-color); /* Usa variabile */
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.chatbot-header .chatbot-close-button:hover {
+    opacity: var(--chatbot-close-button-hover-opacity); /* Usa variabile */
+} 

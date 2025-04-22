@@ -1,0 +1,43 @@
+/* Stili per il bottone flottante di apertura/chiusura */
+
+/* Blocco :root rimosso - le variabili sono ora in styles/variables.css */
+
+.chatbot-toggle-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--chatbot-toggle-bg); 
+    /* Optional: Gradient background */
+    /* background: linear-gradient(to right, #2575fc, #6a11cb); */
+    color: var(--chatbot-toggle-text); /* Già usa variabile */
+    border: none;
+    border-radius: 50%; /* Cerchio perfetto */
+    font-size: 24px; /* Dimensione icona (?, x) */
+    line-height: 1; /* Aiuta a centrare l'icona */
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--chatbot-toggle-shadow); /* Ombra più definita */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001; /* Sopra il contenitore della chat */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.chatbot-toggle-button:hover {
+    background-color: var(--chatbot-toggle-bg-hover); /* Già usa variabile */
+    box-shadow: 0 6px 16px var(--chatbot-toggle-shadow); /* Già usa variabile */
+    transform: translateY(-2px); /* Leggero effetto sollevamento */
+}
+
+.chatbot-toggle-button:active {
+    transform: scale(0.96); /* Effetto pressione */
+    box-shadow: 0 2px 8px var(--chatbot-toggle-shadow); /* Già usa variabile */
+}
+
+/* Stile per l'icona interna se usi span */
+.chatbot-toggle-button span {
+    display: block; 
+    /* Aggiustamenti fini se necessario */
+} 
