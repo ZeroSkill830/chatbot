@@ -1,9 +1,13 @@
 (function() {
     console.log("Loader script eseguito.");
 
-    // Configurazioni (potrebbero venire da attributi data-* dello script tag in futuro)
-    const chatbotScriptURL = 'chatbot.js';
-    const chatbotCSSURL = 'style.css';
+    // -------- MODIFICA NECESSARIA QUI --------
+    // Sostituisci con l'URL reale del tuo repository GitHub Pages
+    const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- CAMBIA QUESTO!
+    // -----------------------------------------
+
+    const chatbotScriptURL = `${GITHUB_PAGES_BASE_URL}/chatbot.js`;
+    const chatbotCSSURL = `${GITHUB_PAGES_BASE_URL}/style.css`;
 
     // Funzione per caricare uno script
     function loadScript(url) {
@@ -27,24 +31,27 @@
     async function initializeChatbot() {
         console.log("Inizializzazione chatbot...");
         try {
-            // Carica prima il CSS
-            // Usiamo il metodo statico definito (o che definiremo) in Chatbot,
-            // ma visto che Chatbot non è ancora caricato, replichiamo la logica qui per ora
-            // o la mettiamo in una utility globale.
-            // Semplifichiamo: carichiamo il CSS dopo lo script JS principale.
-
             // Carica lo script principale del chatbot
             await loadScript(chatbotScriptURL);
 
             // Assicurati che la classe Chatbot sia disponibile
-            // (potrebbe essere necessario un piccolo ritardo o un controllo)
+            // (Aggiungiamo un piccolo ritardo e riproviamo una volta per sicurezza)
             if (typeof Chatbot === 'undefined') {
-                console.error("La classe Chatbot non è stata definita o caricata correttamente.");
-                return;
+                await new Promise(resolve => setTimeout(resolve, 100)); 
+                if (typeof Chatbot === 'undefined') {
+                    console.error("La classe Chatbot non è stata definita o caricata correttamente.");
+                    return;
+                } 
             }
 
             // Ora carica il CSS usando il metodo statico della classe Chatbot
-            await Chatbot.loadCSS(chatbotCSSURL);
+            // Assicurati che il metodo esista prima di chiamarlo
+            if (Chatbot && typeof Chatbot.loadCSS === 'function') {
+                await Chatbot.loadCSS(chatbotCSSURL);
+            } else {
+                console.error("Metodo Chatbot.loadCSS non trovato.");
+                // Potresti voler implementare un fallback qui se necessario
+            }
 
             // Crea l'istanza del chatbot
             const chatbotInstance = new Chatbot();
