@@ -5,7 +5,7 @@
     // Commentiamo l'URL di GitHub Pages
     // const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- COMMENTATO
     // Usiamo percorsi relativi per il caricamento locale
-    const useRelativePaths = true; // Imposta a false per tornare a GitHub Pages
+    const useRelativePaths = false; // Imposta a false per tornare a GitHub Pages
     const GITHUB_PAGES_BASE_URL = useRelativePaths ? '.' : 'https://zeroskill830.github.io/chatbot'; // Usa '.' come base per relativo
     // ---------------------------------
 
