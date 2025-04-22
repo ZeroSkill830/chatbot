@@ -2,12 +2,17 @@
     console.log("Loader script eseguito.");
 
     // -------- MODIFICA NECESSARIA QUI --------
-    // Sostituisci con l'URL reale del tuo repository GitHub Pages
-    const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- CAMBIA QUESTO!
+    // Assicurati che questo URL sia corretto per il tuo repository GitHub Pages
+    const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- VERIFICA QUESTO!
     // -----------------------------------------
 
-    const chatbotScriptURL = `${GITHUB_PAGES_BASE_URL}/chatbot.js`;
-    const chatbotCSSURL = `${GITHUB_PAGES_BASE_URL}/style.css`;
+    // Lista degli script da caricare in ordine
+    const chatbotScripts = [
+        `${GITHUB_PAGES_BASE_URL}/chatbot-ui.js`,          // Prima la UI
+        `${GITHUB_PAGES_BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
+        `${GITHUB_PAGES_BASE_URL}/chatbot-core.js`          // Infine il core che usa gli altri due
+    ];
+    const chatbotCSSURL = `${GITHUB_PAGES_BASE_URL}/style.css`; // Rinominato da style.css a chatbot-styles.css? Verifica nome file. Lo lascio style.css per ora.
 
     // Funzione per caricare uno script
     function loadScript(url) {
@@ -27,39 +32,55 @@
         });
     }
 
+    // Funzione per caricare CSS (presa da chatbot-core e messa qui per caricarla prima)
+    function loadCSS(url) {
+        return new Promise((resolve, reject) => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = url;
+            link.onload = () => {
+                console.log(`Loader: CSS caricato: ${url}`);
+                resolve();
+            };
+            link.onerror = (error) => {
+                console.error(`Loader: Errore nel caricamento del CSS: ${url}`, error);
+                reject(error);
+            };
+            document.head.appendChild(link);
+        });
+    }
+
     // Funzione per inizializzare il chatbot
     async function initializeChatbot() {
-        console.log("Inizializzazione chatbot...");
+        console.log("Loader: Inizializzazione chatbot...");
         try {
-            // Carica lo script principale del chatbot
-            await loadScript(chatbotScriptURL);
+            // Carica prima il CSS
+            await loadCSS(chatbotCSSURL);
 
-            // Assicurati che la classe Chatbot sia disponibile
-            // (Aggiungiamo un piccolo ritardo e riproviamo una volta per sicurezza)
+            // Carica tutti gli script del chatbot in sequenza
+            for (const scriptURL of chatbotScripts) {
+                await loadScript(scriptURL);
+            }
+
+            // Assicurati che la classe Chatbot (dal core) sia disponibile
             if (typeof Chatbot === 'undefined') {
-                await new Promise(resolve => setTimeout(resolve, 100)); 
-                if (typeof Chatbot === 'undefined') {
-                    console.error("La classe Chatbot non è stata definita o caricata correttamente.");
-                    return;
-                } 
+                console.error("Loader: La classe Chatbot (core) non è stata definita.");
+                return;
             }
-
-            // Ora carica il CSS usando il metodo statico della classe Chatbot
-            // Assicurati che il metodo esista prima di chiamarlo
-            if (Chatbot && typeof Chatbot.loadCSS === 'function') {
-                await Chatbot.loadCSS(chatbotCSSURL);
-            } else {
-                console.error("Metodo Chatbot.loadCSS non trovato.");
-                // Potresti voler implementare un fallback qui se necessario
-            }
+             // Assicurati che gli altri moduli siano disponibili (se li esponi globalmente)
+             if (typeof ChatbotUI === 'undefined' || typeof ChatbotMessageHandler === 'undefined') {
+                 console.error("Loader: Moduli ChatbotUI o ChatbotMessageHandler non definiti globalmente.");
+                 return;
+             }
 
             // Crea l'istanza del chatbot
             const chatbotInstance = new Chatbot();
 
-            // Crea l'UI del chatbot
-            chatbotInstance.createUI();
+            // Inizializza il chatbot (che ora creerà UI e imposterà handler)
+            await chatbotInstance.initialize(); // Passa eventuali config qui
 
-            console.log("Chatbot inizializzato con successo!");
+            console.log("Loader: Chatbot inizializzato con successo!");
 
         } catch (error) {
             console.error("Errore durante l'inizializzazione del chatbot:", error);
