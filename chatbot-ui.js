@@ -23,7 +23,7 @@ const ChatbotUI = {
         const header = document.createElement('div');
         header.className = 'chatbot-header';
         header.innerHTML = `
-            <span>Chatbot</span>
+            <span>Agento Wine 🍷</span>
             <button class="chatbot-close-button">&times;</button>
         `;
         const closeButton = header.querySelector('.chatbot-close-button');

@@ -1,0 +1,29 @@
+/* Stili per i singoli messaggi (bolle) */
+
+.chatbot-message {
+    padding: 10px 14px; /* Padding interno della bolla */
+    border-radius: var(--chatbot-border-radius-message); /* Usa variabile */
+    /* margin-bottom: 10px;  Rimosso, usiamo gap nell'area messaggi */
+    max-width: 80%; /* Larghezza massima della bolla */
+    line-height: 1.4; /* Interlinea per leggibilità */
+    word-wrap: break-word; /* Va a capo se parole lunghe */
+    font-size: 0.95rem; /* Dimensione testo leggermente ridotta */
+}
+
+/* Stili per i messaggi dell'utente */
+.chatbot-message-user {
+    background-color: var(--chatbot-message-user-bg); /* Usa variabile */
+    color: var(--chatbot-message-user-text); /* Usa variabile */
+    align-self: flex-end; /* Allinea a destra */
+    border-bottom-right-radius: 4px; /* Piccolo aggiustamento estetico angolo */
+    /* margin-left: auto;  Gestito da align-self e max-width */
+}
+
+/* Stili per i messaggi del bot */
+.chatbot-message-bot {
+    background-color: var(--chatbot-message-bot-bg); /* Usa variabile */
+    color: var(--chatbot-message-bot-text); /* Usa variabile */
+    align-self: flex-start; /* Allinea a sinistra */
+    border-bottom-left-radius: 4px; /* Piccolo aggiustamento estetico angolo */
+    /* margin-right: auto; Gestito da align-self e max-width */
+} 

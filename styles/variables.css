@@ -1,0 +1,42 @@
+/* Definizioni delle variabili CSS globali per il chatbot */
+
+:root {
+    /* Colori di Base */
+    --chatbot-bg: #ffffff;
+    --chatbot-header-bg: #f8f9fa;
+    --chatbot-footer-bg: #f8f9fa;
+    --chatbot-text-primary: #333;
+    --chatbot-text-secondary: #495057;
+    --chatbot-border-color: #e9ecef;
+    --chatbot-placeholder-color: #adb5bd;
+
+    /* Colori Messaggi */
+    --chatbot-message-bot-bg: #f1f1f1;
+    --chatbot-message-bot-text: #333333;
+    --chatbot-message-user-bg: #e6e6ff; /* Viola/blu molto chiaro */
+    --chatbot-message-user-text: #1a1a1a;
+
+    /* Colori Elementi Interattivi */
+    --chatbot-accent-color: #007bff; /* Blu primario per bottoni/focus */
+    --chatbot-accent-color-hover: #0056b3;
+    --chatbot-focus-shadow: rgba(0, 123, 255, 0.25);
+    --chatbot-close-button-color: #6c757d;
+    --chatbot-close-button-hover-opacity: 1;
+
+    /* Colori Bottone Toggle */
+    --chatbot-toggle-bg: #6a11cb; /* Viola */
+    --chatbot-toggle-bg-hover: #2575fc; /* Blu per hover */
+    --chatbot-toggle-text: #ffffff;
+
+    /* Ombre */
+    --chatbot-shadow-color: rgba(0, 0, 0, 0.1);
+    --chatbot-toggle-shadow: rgba(0, 0, 0, 0.15);
+
+    /* Font */
+    --chatbot-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    /* Altre Variabili (Esempio) */
+    --chatbot-border-radius-container: 16px;
+    --chatbot-border-radius-message: 18px;
+    --chatbot-border-radius-input: 20px;
+} 

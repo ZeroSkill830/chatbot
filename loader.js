@@ -1,10 +1,13 @@
 (function() {
     console.log("Loader script eseguito.");
 
-    // -------- MODIFICA NECESSARIA QUI --------
-    // Assicurati che questo URL sia corretto per il tuo repository GitHub Pages
-    const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- VERIFICA QUESTO!
-    // -----------------------------------------
+    // -------- SVILUPPO LOCALE --------
+    // Commentiamo l'URL di GitHub Pages
+    // const GITHUB_PAGES_BASE_URL = "https://zeroskill830.github.io/chatbot"; // <-- COMMENTATO
+    // Usiamo percorsi relativi per il caricamento locale
+    const useRelativePaths = true; // Imposta a false per tornare a GitHub Pages
+    const GITHUB_PAGES_BASE_URL = useRelativePaths ? '.' : 'https://zeroskill830.github.io/chatbot'; // Usa '.' come base per relativo
+    // ---------------------------------
 
     // Lista degli script da caricare in ordine
     const chatbotScripts = [
@@ -12,7 +15,20 @@
         `${GITHUB_PAGES_BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
         `${GITHUB_PAGES_BASE_URL}/chatbot-core.js`          // Infine il core che usa gli altri due
     ];
-    const chatbotCSSURL = `${GITHUB_PAGES_BASE_URL}/style.css`; // Rinominato da style.css a chatbot-styles.css? Verifica nome file. Lo lascio style.css per ora.
+    
+    // Lista dei CSS da caricare (variables.css per primo!)
+    const chatbotStyleURLs = [
+        `${GITHUB_PAGES_BASE_URL}/styles/variables.css`, // <-- CARICA PRIMA!
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-container.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-header.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-message-area.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-message.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-footer.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-input.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-send-button.css`,
+        `${GITHUB_PAGES_BASE_URL}/styles/chatbot-toggle-button.css`,
+        // Aggiungere qui eventuali altri file CSS globali se necessario
+    ];
 
     // Funzione per caricare uno script
     function loadScript(url) {
@@ -55,8 +71,12 @@
     async function initializeChatbot() {
         console.log("Loader: Inizializzazione chatbot...");
         try {
-            // Carica prima il CSS
-            await loadCSS(chatbotCSSURL);
+            // Carica tutti i file CSS prima degli script
+            console.log("Loader: Caricamento CSS...");
+            for (const cssURL of chatbotStyleURLs) {
+                await loadCSS(cssURL);
+            }
+            console.log("Loader: Tutti i CSS caricati.");
 
             // Carica tutti gli script del chatbot in sequenza
             for (const scriptURL of chatbotScripts) {

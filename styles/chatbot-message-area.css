@@ -1,0 +1,30 @@
+/* Stili per l'area messaggi del chatbot */
+
+.chatbot-message-area {
+    flex-grow: 1; /* Fa espandere l'area per riempire lo spazio verticale */
+    overflow-y: auto; /* Abilita lo scroll verticale se i messaggi eccedono l'altezza */
+    padding: 16px; /* Spazio interno per i messaggi */
+    display: flex; /* Necessario per usare align-self sui messaggi figli */
+    flex-direction: column; /* Impila i messaggi verticalmente */
+    gap: 10px; /* Spazio tra le bolle dei messaggi */
+}
+
+/* Styling della scrollbar (opzionale, per un look più moderno) */
+/* Funziona su browser WebKit (Chrome, Safari, Edge) */
+.chatbot-message-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chatbot-message-area::-webkit-scrollbar-track {
+    background: transparent; /* Sfondo traccia trasparente */
+    border-radius: 3px;
+}
+
+.chatbot-message-area::-webkit-scrollbar-thumb {
+    background: var(--chatbot-border-color); /* Usa colore bordo come thumb */
+    border-radius: 3px;
+}
+
+.chatbot-message-area::-webkit-scrollbar-thumb:hover {
+    background: var(--chatbot-close-button-color); /* Usa colore grigio bottone al hover */
+} 
