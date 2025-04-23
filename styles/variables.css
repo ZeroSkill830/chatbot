@@ -1,6 +1,6 @@
 /* Definizioni delle variabili CSS globali per il chatbot */
 
-:root {
+:host {
     /* Colori di Base */
     --chatbot-bg: #ffffff;
     --chatbot-header-bg: #7F1734;

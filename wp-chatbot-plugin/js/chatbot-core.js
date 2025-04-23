@@ -1,12 +1,5 @@
-// chatbot-core.js
-
-// Importa (potremmo usare import dinamici o caricare tutto nel loader)
-// import { createDOM, displayMessage, toggleVisibility, clearInput, getInputValue } from './chatbot-ui.js';
-// import { initializeMessageHandler } from './chatbot-message-handler.js';
-
 class Chatbot {
     constructor() {
-        console.log("Chatbot Core: Istanziato");
         this.isOpen = false;
         this.elements = {}; // Conterrà riferimenti a elementi DOM importanti (contenitore, input, area messaggi, etc.)
         this.config = {}; // Per configurazioni future
@@ -17,46 +10,40 @@ class Chatbot {
     }
 
     async initialize(config = {}) {
-        console.log("Chatbot Core: Inizializzazione...");
         this.config = config;
+        // Estrai le funzioni e gli URL passati da init.js
+        const { loadCSSInShadow, chatbotStyleURLs /*, loadGoogleFontInShadow - non usato in WP */ } = config;
 
         try {
-            // Assumiamo che UI e Handler siano caricati globalmente dal loader per ora
-            // In futuro potremmo usare import dinamici
-            if (typeof ChatbotUI === 'undefined' || typeof ChatbotMessageHandler === 'undefined') {
-                 console.error("Moduli UI o MessageHandler non caricati.");
-                 // Aggiungere un ritardo e riprovare?
-                 await new Promise(resolve => setTimeout(resolve, 200)); 
-                 if (typeof ChatbotUI === 'undefined' || typeof ChatbotMessageHandler === 'undefined') {
-                     console.error("Moduli UI o MessageHandler ancora non disponibili dopo il ritardo.");
-                     return;
-                 }
-            }
-
-            // 1. Creare il DOM (da chatbot-ui.js)
-            // Passiamo la funzione toggleChat e la funzione per inviare messaggi
+           
+            // 1. Creare Host, Shadow DOM e UI base (da chatbot-ui.js)
             this.elements = ChatbotUI.createDOM(
-                this.toggleChat,
-                this.handleSendMessage // <-- Passa la funzione di invio
+                this.toggleChat,      // Callback per toggle
+                this.handleSendMessage // Callback per invio messaggio (quick actions)
             );
-            document.body.appendChild(this.elements.toggleButton);
-            document.body.appendChild(this.elements.chatContainer);
-            console.log("Chatbot Core: DOM creato", this.elements);
 
-            // Salva riferimento all'animazione Lottie (se presente)
-            if (this.elements.lottieAnimation) {
-                console.log("Chatbot Core: Riferimento animazione Lottie salvato.");
-            }
+            // 2. Aggiungere l'host al body
+            document.body.appendChild(this.elements.hostElement);
 
-            // 2. Inizializzare il gestore messaggi (da chatbot-message-handler.js)
+            // 3. Caricare CSS *nello* Shadow DOM
+            const cssPromises = chatbotStyleURLs.map(url => {
+                console.log(`Chatbot Core (WP): Preparazione chiamata a loadCSSInShadow per ${url}`); // Log per ogni URL
+                return loadCSSInShadow(url, this.elements.shadowRoot);
+            });
+            await Promise.all(cssPromises);
+
+            // 4. Inizializzare Lottie (DOPO caricamento CSS)
+            this.elements.lottieAnimation = initLottieAnimation(
+                this.elements.lottieContainer, 
+                this.elements.toggleButton
+            );
+
+            // 5. Inizializzare il gestore messaggi
             ChatbotMessageHandler.initializeMessageHandler(
                 this.elements.messageInput,
                 this.elements.sendButton,
                 this.handleSendMessage // Passa la funzione di core come callback
             );
-            console.log("Chatbot Core: Gestore messaggi inizializzato.");
-
-            console.log("Chatbot Core: Inizializzazione completata.");
 
         } catch (error) {
             console.error("Chatbot Core: Errore durante l'inizializzazione", error);
@@ -64,7 +51,6 @@ class Chatbot {
     }
 
     toggleChat() {
-        console.log("Chatbot Core: Toggle richiesto");
         this.isOpen = !this.isOpen;
         // Chiamare la funzione UI per aggiornare la visibilità
         ChatbotUI.toggleVisibility(
@@ -73,11 +59,9 @@ class Chatbot {
             this.isOpen,
             this.elements.lottieAnimation // Passa l'animazione Lottie
         );
-        console.log(`Chatbot Core: Stato ${this.isOpen ? 'aperto' : 'chiuso'}`);
     }
 
     handleSendMessage(text) {
-        console.log(`Chatbot Core: Messaggio ricevuto da handler - ${text}`);
         if (!text.trim()) return;
 
         // 1. Mostra messaggio utente (usando la UI)
@@ -106,25 +90,6 @@ class Chatbot {
             const botResponse = `Hai detto: ${text}`;
             ChatbotUI.displayMessage(this.elements.messageArea, botResponse, 'bot');
         }, 1500); // Aumentato leggermente il timeout per vedere l'indicatore
-    }
-
-    // Metodo statico per caricare CSS (potrebbe rimanere qui o spostato)
-    static loadCSS(url) {
-        return new Promise((resolve, reject) => {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = url;
-            link.onload = () => {
-                console.log(`CSS caricato da Core: ${url}`);
-                resolve();
-            };
-            link.onerror = (error) => {
-                console.error(`Errore nel caricamento del CSS da Core: ${url}`, error);
-                reject(error);
-            };
-            document.head.appendChild(link);
-        });
     }
 }
 

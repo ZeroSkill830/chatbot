@@ -3,13 +3,21 @@
 
 const ChatbotUI = {
     /**
-     * Crea gli elementi DOM base per il chatbot (bottone e finestra).
+     * Crea gli elementi DOM base per il chatbot (host, shadow root, bottone e finestra).
      * @param {function} toggleCallback - La funzione da chiamare quando si clicca il bottone flottante o il bottone di chiusura.
      * @param {function} sendMessageCallback - La funzione da chiamare per inviare un messaggio (usata dalle quick actions).
-     * @returns {object} Un oggetto contenente i riferimenti agli elementi DOM principali creati.
+     * @returns {object} Un oggetto contenente i riferimenti all'host, allo shadow root e agli elementi DOM principali creati.
      */
     createDOM(toggleCallback, sendMessageCallback) {
-        console.log("Chatbot UI: Creazione DOM...");
+        console.log("Chatbot UI: Creazione Host e Shadow DOM...");
+
+        // --- Crea Elemento Host ---
+        const hostElement = document.createElement('div');
+        hostElement.id = 'chatbot-host'; // Assegna un ID all'host
+
+        // --- Attacca Shadow Root ---
+        const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+        console.log("Chatbot UI: Shadow DOM creato.");
 
         // --- Bottone Flottante ---
         const toggleButton = document.createElement('button');
@@ -21,20 +29,10 @@ const ChatbotUI = {
         lottieContainer.className = 'chatbot-toggle-lottie'; // Aggiungi una classe per lo styling
         toggleButton.appendChild(lottieContainer);
 
-        let lottieAnimation = null; // Inizializza a null
-        if (typeof initLottieAnimation === 'function') {
-            lottieAnimation = initLottieAnimation(lottieContainer, toggleButton);
-            console.log("Chatbot UI: Animazione Lottie inizializzata tramite chatbot-lottie.js.");
-        } else {
-            console.error("Chatbot UI: Funzione initLottieAnimation non trovata. Assicurati che chatbot-lottie.js sia caricato.");
-            // Fallback: mostra un'icona statica o testo se Lottie non è disponibile
-            toggleButton.innerHTML = '<span>?</span>';
-        }
        
-
         toggleButton.onclick = toggleCallback; // Collega alla funzione del core
 
-        // --- Contenitore Chat ---
+        // --- Contenitore Chat (ora dentro Shadow DOM) ---
         const chatContainer = document.createElement('div');
         chatContainer.className = 'chatbot-container';
 
@@ -72,7 +70,7 @@ const ChatbotUI = {
         footer.appendChild(messageInput);
         footer.appendChild(sendButton);
 
-        // Assembla il contenitore
+        // Assembla il contenitore (dentro Shadow DOM)
         chatContainer.appendChild(header);
         chatContainer.appendChild(messageArea);
         chatContainer.appendChild(quickActionsContainer);
@@ -84,7 +82,7 @@ const ChatbotUI = {
         branding.innerHTML = 'Made with ❤️ from <a href="https://x.com/agentolabs" target="_blank" rel="noopener noreferrer">AgentoLabs</a>'; // Testo con link
         chatContainer.appendChild(branding);
 
-        // --- Popola Quick Actions (Esempio) ---
+        // --- Popola Quick Actions (dentro Shadow DOM) ---
         const quickActions = [
             "Miglior vino rosso? 🍷" ,
             "Fate degustazioni? 🥂",
@@ -107,11 +105,23 @@ const ChatbotUI = {
             quickActionsContainer.appendChild(button);
         });
 
-        console.log("Chatbot UI: DOM creato.");
+        // --- Aggiungi elementi principali allo Shadow Root ---
+        shadowRoot.appendChild(toggleButton); // Il bottone ora è nello Shadow DOM
+        shadowRoot.appendChild(chatContainer); // Anche la finestra è nello Shadow DOM
 
-        // Restituisce i riferimenti agli elementi chiave
+        console.log("Chatbot UI: Elementi UI appesi allo Shadow DOM.");
+
+        // Aggiungi l'host al body (l'unico elemento aggiunto fuori dallo shadow)
+        // Questo dovrebbe avvenire nella logica di inizializzazione principale (es. in chatbot-core.js o chatbot-init.js)
+        // Qui prepariamo solo l'host.
+        // document.body.appendChild(hostElement); // RIMOSSO DA QUI
+
+        // Restituisce i riferimenti inclusi host e shadow root
         return {
+            hostElement, // L'elemento a cui è attaccato lo shadow root
+            shadowRoot,  // Il root dello shadow DOM
             toggleButton,
+            lottieContainer,
             chatContainer,
             header,
             messageArea,
@@ -120,7 +130,6 @@ const ChatbotUI = {
             messageInput,
             sendButton,
             closeButton,
-            lottieAnimation,
             branding
         };
     },
@@ -135,8 +144,6 @@ const ChatbotUI = {
     toggleVisibility(chatContainer, toggleButton, isOpen, lottieAnimation) {
         if (!chatContainer || !toggleButton) return;
         chatContainer.style.display = isOpen ? 'flex' : 'none';
-        // toggleButton.innerHTML = isOpen ? '<span>&times;</span>' : '<span>?</span>'; // Rimosso
-        console.log(`Chatbot UI: Visibilità aggiornata a ${isOpen}`);
 
         // Imposta l'attributo data per sapere lo stato su hover leave
         toggleButton.setAttribute('data-is-open', isOpen.toString());
@@ -172,7 +179,6 @@ const ChatbotUI = {
     clearInput(inputElement) {
         if (inputElement) {
             inputElement.value = '';
-            console.log("Chatbot UI: Input pulito.");
         }
     },
 
@@ -211,16 +217,13 @@ const ChatbotUI = {
         // Disabilita il bottone Invia
         if (sendButton) {
             sendButton.disabled = true;
-            console.log("Chatbot UI: Bottone Invia disabilitato.");
         }
 
         // Nascondi quick actions
         if (quickActionsContainer) {
             quickActionsContainer.classList.add('hidden');
-            console.log("Chatbot UI: Quick actions nascoste (con classe).");
         }
 
-        console.log("Chatbot UI: Indicatore di scrittura visualizzato.");
         return indicatorElement; // Restituisce il riferimento per poterlo rimuovere
     },
 
@@ -233,22 +236,19 @@ const ChatbotUI = {
     removeTypingIndicator(indicatorElement, sendButton, quickActionsContainer) {
         if (indicatorElement && indicatorElement.parentNode) {
             indicatorElement.parentNode.removeChild(indicatorElement);
-            console.log("Chatbot UI: Indicatore di scrittura rimosso.");
 
             // Riabilita il bottone Invia
             if (sendButton) {
                 sendButton.disabled = false;
-                console.log("Chatbot UI: Bottone Invia riabilitato.");
             }
 
             // Mostra quick actions
             if (quickActionsContainer) {
                 quickActionsContainer.classList.remove('hidden');
-                console.log("Chatbot UI: Quick actions mostrate (con classe).");
             }
         }
     }
 };
 
-// Rendi disponibile globalmente
+// Rendi disponibile globalmente (necessario se altri script la cercano su window)
 window.ChatbotUI = ChatbotUI; 

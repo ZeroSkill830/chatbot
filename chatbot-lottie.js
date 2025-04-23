@@ -26,21 +26,17 @@ function initLottieAnimation(lottieContainer, toggleButton) {
         autoplay: false,
         animationData: toggleButtonAnimationData
     });
-    console.log("Lottie Animation: Caricata (dati incorporati).");
 
     lottieAnimation.addEventListener('DOMLoaded', () => {
-        console.log("Lottie Animation: DOM Loaded, impostando stato iniziale.");
         const closedFrame = 0;
         lottieAnimation.goToAndStop(closedFrame, true);
 
         toggleButton.addEventListener('mouseenter', () => {
-            console.log("Lottie Animation: Mouse enter, play animation in loop");
             lottieAnimation.loop = true;
             lottieAnimation.play();
         });
 
         toggleButton.addEventListener('mouseleave', () => {
-            console.log("Lottie Animation: Mouse leave, stop loop and reset to static frame");
             lottieAnimation.loop = false;
             lottieAnimation.stop();
 
@@ -67,7 +63,6 @@ function setLottieState(lottieAnimation, isOpen) {
     const totalFrames = lottieAnimation.totalFrames;
     const openFrame = totalFrames > 0 ? totalFrames - 1 : 0; // Ultimo frame
 
-    console.log(`Lottie Animation: Impostando Lottie frame a ${isOpen ? openFrame : closedFrame}`);
     lottieAnimation.goToAndStop(isOpen ? openFrame : closedFrame, true);
 }
 

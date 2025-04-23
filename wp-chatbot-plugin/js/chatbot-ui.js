@@ -11,6 +11,28 @@ const ChatbotUI = {
     createDOM(toggleCallback, sendMessageCallback) {
         console.log("Chatbot UI: Creazione DOM...");
 
+        const hostElement = document.createElement('div');
+        hostElement.id = 'chatbot-host';
+        console.log("Chatbot UI (createDOM): hostElement creato:", hostElement); // Log creazione host
+
+        // --- Attacca Shadow Root ---
+        let shadowRoot = null; // Inizializza a null
+        try {
+            shadowRoot = hostElement.attachShadow({ mode: 'open' });
+            console.log("Chatbot UI (createDOM): shadowRoot creato:", shadowRoot); // Log creazione shadow root
+        } catch (e) {
+            console.error("Chatbot UI (createDOM): Errore durante attachShadow:", e);
+            // Se attachShadow fallisce, non possiamo procedere con l'appendere elementi
+            // Restituiamo un oggetto che farà fallire il check in core.js
+            return { hostElement }; 
+        }
+
+        // Aggiunta verifica esistenza shadowRoot prima di usarlo
+        if (!shadowRoot) {
+            console.error("Chatbot UI (createDOM): shadowRoot non è valido dopo attachShadow, impossibile procedere.");
+            return { hostElement }; // Restituisci oggetto incompleto
+        }
+
         // --- Bottone Flottante ---
         const toggleButton = document.createElement('button');
         toggleButton.className = 'chatbot-toggle-button';
@@ -21,17 +43,7 @@ const ChatbotUI = {
         lottieContainer.className = 'chatbot-toggle-lottie'; // Aggiungi una classe per lo styling
         toggleButton.appendChild(lottieContainer);
 
-        let lottieAnimation = null; // Inizializza a null
-        if (typeof initLottieAnimation === 'function') {
-            lottieAnimation = initLottieAnimation(lottieContainer, toggleButton);
-            console.log("Chatbot UI: Animazione Lottie inizializzata tramite chatbot-lottie.js.");
-        } else {
-            console.error("Chatbot UI: Funzione initLottieAnimation non trovata. Assicurati che chatbot-lottie.js sia caricato.");
-            // Fallback: mostra un'icona statica o testo se Lottie non è disponibile
-            toggleButton.innerHTML = '<span>?</span>';
-        }
        
-
         toggleButton.onclick = toggleCallback; // Collega alla funzione del core
 
         // --- Contenitore Chat ---
@@ -101,17 +113,22 @@ const ChatbotUI = {
                 if (typeof sendMessageCallback === 'function') {
                     sendMessageCallback(actionText);
                 } else {
-                    console.error("Chatbot UI: sendMessageCallback non è una funzione valida!");
                 }
             };
             quickActionsContainer.appendChild(button);
         });
 
-        console.log("Chatbot UI: DOM creato.");
 
-        // Restituisce i riferimenti agli elementi chiave
-        return {
+        shadowRoot.appendChild(toggleButton); // Il bottone ora è nello Shadow DOM
+        shadowRoot.appendChild(chatContainer); // Anche la finestra è nello Shadow DOM
+
+
+        // Log prima del return per vedere l'oggetto completo
+        const elementsToReturn = {
+            hostElement,
+            shadowRoot,
             toggleButton,
+            lottieContainer,
             chatContainer,
             header,
             messageArea,
@@ -120,9 +137,11 @@ const ChatbotUI = {
             messageInput,
             sendButton,
             closeButton,
-            lottieAnimation,
             branding
         };
+
+        // Restituisce i riferimenti inclusi host e shadow root
+        return elementsToReturn;
     },
 
     /**
@@ -136,7 +155,6 @@ const ChatbotUI = {
         if (!chatContainer || !toggleButton) return;
         chatContainer.style.display = isOpen ? 'flex' : 'none';
         // toggleButton.innerHTML = isOpen ? '<span>&times;</span>' : '<span>?</span>'; // Rimosso
-        console.log(`Chatbot UI: Visibilità aggiornata a ${isOpen}`);
 
         // Imposta l'attributo data per sapere lo stato su hover leave
         toggleButton.setAttribute('data-is-open', isOpen.toString());
@@ -162,7 +180,6 @@ const ChatbotUI = {
 
         // Scroll automatico
         messageArea.scrollTop = messageArea.scrollHeight;
-        console.log(`Chatbot UI: Messaggio [${sender}] visualizzato: ${text}`);
     },
 
     /**
@@ -172,7 +189,6 @@ const ChatbotUI = {
     clearInput(inputElement) {
         if (inputElement) {
             inputElement.value = '';
-            console.log("Chatbot UI: Input pulito.");
         }
     },
 

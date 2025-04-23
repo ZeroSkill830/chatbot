@@ -1,12 +1,9 @@
-(function() {
-    console.log("Loader script eseguito.");
-
+(function () {
     // Flag per caricamento locale vs remoto
     const LOAD_REMOTELY = false; // Imposta a true per caricare da GitHub Pages
 
     // Definisci BASE_URL dinamicamente
-    const BASE_URL = LOAD_REMOTELY ? "https://zeroskill830.github.io/chatbot" : "chatbot";
-    console.log(`Loader: Utilizzo BASE_URL: ${BASE_URL}`);
+    const BASE_URL = LOAD_REMOTELY ? "https://zeroskill830.github.io/chatbot" : ".";
 
     // Esponi BASE_URL globalmente per altri script (es. Lottie path)
     window.CHATBOT_BASE_URL = BASE_URL;
@@ -18,7 +15,7 @@
         `${BASE_URL}/chatbot-core.js`,          // Infine il core che usa gli altri due
         `${BASE_URL}/chatbot-lottie.js`         // Infine il core che usa gli altri due
     ];
-    
+
     // Lista dei CSS da caricare (variables.css per primo!) (usa BASE_URL)
     const chatbotStyleURLs = [
         `${BASE_URL}/styles/variables.css`, // <-- CARICA PRIMA!
@@ -41,106 +38,86 @@
             script.src = url;
             script.async = true;
             script.onload = () => {
-                console.log(`Script caricato: ${url}`);
                 resolve();
             };
             script.onerror = (error) => {
-                console.error(`Errore nel caricamento dello script: ${url}`, error);
                 reject(error);
             };
             document.body.appendChild(script);
         });
     }
 
-    // Funzione per caricare CSS (presa da chatbot-core e messa qui per caricarla prima)
-    function loadCSS(url) {
+    // Funzione per caricare CSS DENTRO lo Shadow DOM
+    function loadCSSInShadow(url, shadowRoot) {
         return new Promise((resolve, reject) => {
+            if (!shadowRoot) {
+                return reject(new Error("Shadow root non fornito per caricare CSS."));
+            }
             const link = document.createElement('link');
             link.rel = 'stylesheet';
             link.type = 'text/css';
             link.href = url;
             link.onload = () => {
-                console.log(`Loader: CSS caricato: ${url}`);
                 resolve();
             };
             link.onerror = (error) => {
-                console.error(`Loader: Errore nel caricamento del CSS: ${url}`, error);
                 reject(error);
             };
-            document.head.appendChild(link);
+            shadowRoot.appendChild(link); // <-- Appendi allo shadow root
         });
     }
 
-    // Funzione per caricare Google Fonts
-    function loadGoogleFont(url) {
+    // Funzione per caricare Google Fonts DENTRO lo Shadow DOM
+    function loadGoogleFontInShadow(url, shadowRoot) {
         return new Promise((resolve, reject) => {
-            const link = document.createElement('link');
-            link.rel = 'preconnect';
-            link.href = 'https://fonts.gstatic.com';
-            document.head.appendChild(link); // Aggiungi preconnect prima
+            if (!shadowRoot) {
+                return reject(new Error("Shadow root non fornito per caricare Google Font."));
+            }
+            // Il preconnect può rimanere nel head, ma il link stylesheet va nello shadow
+            const preconnectLink = document.createElement('link');
+            preconnectLink.rel = 'preconnect';
+            preconnectLink.href = 'https://fonts.gstatic.com';
+            document.head.appendChild(preconnectLink);
 
             const fontLink = document.createElement('link');
             fontLink.rel = 'stylesheet';
             fontLink.href = url;
             fontLink.onload = () => {
-                console.log(`Loader: Google Font caricato: ${url}`);
                 resolve();
             };
             fontLink.onerror = (error) => {
-                console.error(`Loader: Errore nel caricamento del Google Font: ${url}`, error);
                 reject(error);
             };
-            document.head.appendChild(fontLink);
+            shadowRoot.appendChild(fontLink); // <-- Appendi allo shadow root
         });
     }
 
-    // Funzione per inizializzare il chatbot
+    // Funzione per inizializzare il chatbot (logica aggiornata per Shadow DOM)
     async function initializeChatbot() {
-        console.log("Loader: Inizializzazione chatbot...");
         try {
-            // Carica Google Font (Urbanist)
-            console.log("Loader: Caricamento Google Font...");
-            const googleFontUrl = 'https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap';
-            await loadGoogleFont(googleFontUrl);
-            console.log("Loader: Google Font caricato.");
+            // 1. Carica gli script essenziali per la creazione della UI e Core
+            // Assicurati che l'ordine sia corretto per le dipendenze
+            await loadScript(`${BASE_URL}/chatbot-ui.js`);
+            await loadScript(`${BASE_URL}/chatbot-message-handler.js`); // Se Chatbot dipende da questo
+            await loadScript(`${BASE_URL}/chatbot-core.js`); // Contiene la classe Chatbot
 
-            // Carica tutti i file CSS prima degli script
-            console.log("Loader: Caricamento CSS...");
-            for (const cssURL of chatbotStyleURLs) {
-                await loadCSS(cssURL);
-            }
-            console.log("Loader: Tutti i CSS caricati.");
-
-            // Carica la libreria Lottie
-            console.log("Loader: Caricamento libreria Lottie...");
-            const lottieURL = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js";
-            await loadScript(lottieURL);
-            console.log("Loader: Libreria Lottie caricata.");
-
-            // Carica tutti gli script del chatbot in sequenza
-            for (const scriptURL of chatbotScripts) {
-                await loadScript(scriptURL);
-            }
-
-            // Assicurati che la classe Chatbot (dal core) sia disponibile
-            if (typeof Chatbot === 'undefined') {
-                console.error("Loader: La classe Chatbot (core) non è stata definita.");
+            if (typeof ChatbotUI === 'undefined' || typeof Chatbot === 'undefined') {
+                console.error("Loader: ChatbotUI o Chatbot non definiti dopo caricamento script.");
                 return;
             }
-             // Assicurati che gli altri moduli siano disponibili (se li esponi globalmente)
-             if (typeof ChatbotUI === 'undefined' || typeof ChatbotMessageHandler === 'undefined') {
-                 console.error("Loader: Moduli ChatbotUI o ChatbotMessageHandler non definiti globalmente.");
-                 return;
-             }
 
-            // Crea l'istanza del chatbot
+            // 2. Crea l'istanza del Chatbot
+            // L'istanza ora gestirà la creazione del DOM interno
             const chatbotInstance = new Chatbot();
-            window.chatbotInstance = chatbotInstance; // Rendi l'istanza globale
+            window.chatbotInstance = chatbotInstance; // Rendi globale se necessario
 
-            // Inizializza il chatbot (che ora creerà UI e imposterà handler)
-            await chatbotInstance.initialize(); // Passa eventuali config qui
+            const lottieURL = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js";
+            await loadScript(lottieURL);
+            // 6. Carica script rimanenti (es. chatbot-lottie.js)
+            // Assicurati che chatbot-lottie.js sia caricato DOPO Lottie e DOPO la creazione del DOM
+            await loadScript(`${BASE_URL}/chatbot-lottie.js`);
 
-            console.log("Loader: Chatbot inizializzato con successo!");
+            await chatbotInstance.initialize({ loadCSSInShadow, loadGoogleFontInShadow, chatbotStyleURLs }); // Passa le funzioni/dati necessari
 
         } catch (error) {
             console.error("Errore durante l'inizializzazione del chatbot:", error);
@@ -150,9 +127,7 @@
     // Assicurati che il DOM sia pronto prima di eseguire l'inizializzazione
     if (document.readyState === 'loading') { // Loading hasn't finished yet
         document.addEventListener('DOMContentLoaded', initializeChatbot);
-        console.log("Inizializzazione posticipata a DOMContentLoaded.");
     } else { // `DOMContentLoaded` has already fired
-        console.log("DOM già caricato, inizializzazione immediata.");
         initializeChatbot();
     }
 
