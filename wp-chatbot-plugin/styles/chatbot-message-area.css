@@ -4,6 +4,7 @@
     flex-grow: 1; /* Fa espandere l'area per riempire lo spazio verticale */
     overflow-y: auto; /* Abilita lo scroll verticale se i messaggi eccedono l'altezza */
     padding: 16px; /* Spazio interno per i messaggi */
+    padding-top: 40px;
     display: flex; /* Necessario per usare align-self sui messaggi figli */
     flex-direction: column; /* Impila i messaggi verticalmente */
     gap: 10px; /* Spazio tra le bolle dei messaggi */

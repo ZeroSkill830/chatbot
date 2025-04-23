@@ -34,8 +34,11 @@ class Chatbot {
             }
 
             // 1. Creare il DOM (da chatbot-ui.js)
-            // Passiamo la funzione toggleChat come callback per i bottoni
-            this.elements = ChatbotUI.createDOM(this.toggleChat);
+            // Passiamo la funzione toggleChat e la funzione per inviare messaggi
+            this.elements = ChatbotUI.createDOM(
+                this.toggleChat,
+                this.handleSendMessage // <-- Passa la funzione di invio
+            );
             document.body.appendChild(this.elements.toggleButton);
             document.body.appendChild(this.elements.chatContainer);
             console.log("Chatbot Core: DOM creato", this.elements);

@@ -1,0 +1,49 @@
+/* Stili per il contenitore e i bottoni delle quick actions */
+
+.chatbot-quick-actions-container {
+  padding: 10px 16px; /* Spaziatura interna */
+  display: flex; /* Layout orizzontale */
+  flex-wrap: wrap; /* Permette ai bottoni di andare a capo */
+  gap: 8px; /* Spazio tra i bottoni */
+  /* Optional: Aggiungere un bordo superiore se si vuole separazione netta */
+  /* border-top: 1px solid var(--chatbot-border-color); */
+  background-color: transparent; /* O eredita dal container principale */
+  /* Proprietà per la transizione */
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0s;
+  pointer-events: auto;
+}
+
+/* Stato nascosto per transizione */
+.chatbot-quick-actions-container.hidden {
+  opacity: 0;
+  transform: translateY(10px); /* Leggero slide verso il basso quando scompare/verso l'alto quando appare */
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s; /* Ritarda l'hide */
+  pointer-events: none; /* Blocca interazioni quando nascosto */
+}
+
+.chatbot-quick-action-button {
+  background-color: var(--chatbot-secondary-bg-color, #f0f0f0); /* Sfondo leggermente diverso */
+  color: var(--chatbot-accent-color, #333); /* Colore testo primario o accent */
+  border: 1px solid var(--chatbot-border-color, #ddd); /* Bordo sottile */
+  border-radius: 15px; /* Angoli arrotondati */
+  padding: 6px 12px; /* Padding interno */
+  font-size: 0.85rem; /* Dimensione testo */
+  font-family: inherit; /* Eredita font */
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap; /* Evita che il testo del bottone vada a capo */
+}
+
+.chatbot-quick-action-button:hover {
+  background-color: var(--chatbot-accent-color-light, #e0e0e0); /* Sfondo leggermente più scuro/accentato su hover */
+  border-color: var(--chatbot-accent-color, #ccc); /* Bordo leggermente più scuro/accentato */
+  color: var(--chatbot-accent-color-hover, #000); /* Colore testo su hover */
+}
+
+.chatbot-quick-action-button:active {
+  transform: scale(0.98); /* Leggero effetto pressione */
+} 

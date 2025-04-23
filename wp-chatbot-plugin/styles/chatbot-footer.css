@@ -1,11 +1,20 @@
-/* Stili per il footer (area input) del chatbot */
-
 .chatbot-footer {
     display: flex;
-    align-items: center; /* Allinea verticalmente input e bottone */
+    align-items: center;
     padding: 12px 16px;
-    border-top: 1px solid var(--chatbot-border-color); /* Usa variabile */
-    background-color: var(--chatbot-footer-bg); /* Usa variabile */
-    flex-shrink: 0; /* Impedisce al footer di restringersi */
-    gap: 8px; /* Spazio tra input e bottone */
-} 
+    background-color: var(--chatbot-footer-bg);
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+.chatbot-branding {
+    background-color: var(--chatbot-footer-bg);
+    font-size: 0.75rem;
+    color: #aaa;
+    text-align: center;
+    padding: 5px 0;
+    border-top: 1px solid var(--chatbot-border-color);
+    a {
+        color: #666;
+    }
+}

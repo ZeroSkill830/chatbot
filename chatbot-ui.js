@@ -5,9 +5,10 @@ const ChatbotUI = {
     /**
      * Crea gli elementi DOM base per il chatbot (bottone e finestra).
      * @param {function} toggleCallback - La funzione da chiamare quando si clicca il bottone flottante o il bottone di chiusura.
+     * @param {function} sendMessageCallback - La funzione da chiamare per inviare un messaggio (usata dalle quick actions).
      * @returns {object} Un oggetto contenente i riferimenti agli elementi DOM principali creati.
      */
-    createDOM(toggleCallback) {
+    createDOM(toggleCallback, sendMessageCallback) {
         console.log("Chatbot UI: Creazione DOM...");
 
         // --- Bottone Flottante ---
@@ -96,12 +97,11 @@ const ChatbotUI = {
             button.textContent = actionText;
             button.onclick = () => {
                 // Chiama la funzione per inviare il messaggio
-                // Assumiamo che l'istanza sia globale o passata correttamente
-                if (window.chatbotInstance && typeof window.chatbotInstance.handleSendMessage === 'function') {
-                    window.chatbotInstance.handleSendMessage(actionText);
+                // Usa la callback passata invece di cercare l'istanza globale
+                if (typeof sendMessageCallback === 'function') {
+                    sendMessageCallback(actionText);
                 } else {
-                    console.error("Chatbot UI: Impossibile trovare chatbotInstance.handleSendMessage");
-                    // Potrebbe essere necessario passare la callback a createDOM
+                    console.error("Chatbot UI: sendMessageCallback non è una funzione valida!");
                 }
             };
             quickActionsContainer.appendChild(button);

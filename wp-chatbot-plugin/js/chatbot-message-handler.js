@@ -35,6 +35,15 @@ const ChatbotMessageHandler = {
             // Controlla se il tasto premuto è Invio (Enter)
             if (event.key === 'Enter') {
                 event.preventDefault(); // Previene il comportamento di default (es. a capo in textarea)
+                
+                // *** NUOVO CONTROLLO ***
+                // Controlla se il bottone di invio è disabilitato
+                if (sendButton.disabled) {
+                    console.log("MessageHandler: Invio bloccato (bottone disabilitato).");
+                    return; // Non fare nulla se il bottone è disabilitato
+                }
+                // *** FINE CONTROLLO ***
+
                 handleSend();
             }
         });

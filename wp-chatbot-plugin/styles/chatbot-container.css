@@ -5,11 +5,11 @@
 .chatbot-container {
     font-family: var(--chatbot-font);
     position: fixed;
-    bottom: 90px; /* Aumentato leggermente per più spazio dal bottone */
+    bottom: 120px; /* Aumentato leggermente per più spazio dal bottone */
     right: 20px;
     width: 360px; /* Leggermente più largo */
-    height: 500px; /* Usiamo altezza fissa come da tua modifica precedente */
-    background-color: var(--chatbot-bg);
+    height: 550px; /* Usiamo altezza fissa come da tua modifica precedente */
+    background: linear-gradient(to bottom, #ffffff, var(--chatbot-footer-bg)); /* Gradiente richiesto */
     /* border: 1px solid #eee; Rimosso bordo, usiamo solo shadow */
     border-radius: var(--chatbot-border-radius-container); /* Usa variabile */
     box-shadow: 0 5px 20px var(--chatbot-shadow-color); /* Usa variabile */
