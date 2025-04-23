@@ -84,13 +84,21 @@ class Chatbot {
         ChatbotUI.clearInput(this.elements.messageInput);
 
         // 3. Mostra indicatore di scrittura
-        const typingIndicator = ChatbotUI.displayTypingIndicator(this.elements.messageArea);
+        const typingIndicator = ChatbotUI.displayTypingIndicator(
+            this.elements.messageArea, 
+            this.elements.sendButton, 
+            this.elements.quickActionsContainer
+        );
 
         // 4. Genera e mostra risposta bot (logica semplice per ora)
         // Simula un piccolo ritardo per la risposta
         setTimeout(() => {
             // Rimuovi indicatore di scrittura
-            ChatbotUI.removeTypingIndicator(typingIndicator);
+            ChatbotUI.removeTypingIndicator(
+                typingIndicator, 
+                this.elements.sendButton, 
+                this.elements.quickActionsContainer
+            );
 
             const botResponse = `Hai detto: ${text}`;
             ChatbotUI.displayMessage(this.elements.messageArea, botResponse, 'bot');

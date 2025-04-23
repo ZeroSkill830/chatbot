@@ -30,6 +30,7 @@
         `${BASE_URL}/styles/chatbot-input.css`,
         `${BASE_URL}/styles/chatbot-send-button.css`,
         `${BASE_URL}/styles/chatbot-toggle-button.css`,
+        `${BASE_URL}/styles/chatbot-quick-actions.css`,
         // Aggiungere qui eventuali altri file CSS globali se necessario
     ];
 
@@ -70,10 +71,39 @@
         });
     }
 
+    // Funzione per caricare Google Fonts
+    function loadGoogleFont(url) {
+        return new Promise((resolve, reject) => {
+            const link = document.createElement('link');
+            link.rel = 'preconnect';
+            link.href = 'https://fonts.gstatic.com';
+            document.head.appendChild(link); // Aggiungi preconnect prima
+
+            const fontLink = document.createElement('link');
+            fontLink.rel = 'stylesheet';
+            fontLink.href = url;
+            fontLink.onload = () => {
+                console.log(`Loader: Google Font caricato: ${url}`);
+                resolve();
+            };
+            fontLink.onerror = (error) => {
+                console.error(`Loader: Errore nel caricamento del Google Font: ${url}`, error);
+                reject(error);
+            };
+            document.head.appendChild(fontLink);
+        });
+    }
+
     // Funzione per inizializzare il chatbot
     async function initializeChatbot() {
         console.log("Loader: Inizializzazione chatbot...");
         try {
+            // Carica Google Font (Urbanist)
+            console.log("Loader: Caricamento Google Font...");
+            const googleFontUrl = 'https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap';
+            await loadGoogleFont(googleFontUrl);
+            console.log("Loader: Google Font caricato.");
+
             // Carica tutti i file CSS prima degli script
             console.log("Loader: Caricamento CSS...");
             for (const cssURL of chatbotStyleURLs) {
@@ -105,6 +135,7 @@
 
             // Crea l'istanza del chatbot
             const chatbotInstance = new Chatbot();
+            window.chatbotInstance = chatbotInstance; // Rendi l'istanza globale
 
             // Inizializza il chatbot (che ora creerà UI e imposterà handler)
             await chatbotInstance.initialize(); // Passa eventuali config qui
