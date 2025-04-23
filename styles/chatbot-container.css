@@ -5,7 +5,7 @@
 .chatbot-container {
     font-family: var(--chatbot-font);
     position: fixed;
-    bottom: 90px; /* Aumentato leggermente per più spazio dal bottone */
+    bottom: 120px; /* Aumentato leggermente per più spazio dal bottone */
     right: 20px;
     width: 360px; /* Leggermente più largo */
     height: 500px; /* Usiamo altezza fissa come da tua modifica precedente */

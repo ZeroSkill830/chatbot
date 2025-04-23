@@ -1,19 +1,25 @@
 (function() {
     console.log("Loader script eseguito.");
 
-    // -------- URL ASSOLUTO PER HOSTING --------
-    // URL base per gli asset ospitati su GitHub Pages
-    const BASE_URL = "https://zeroskill830.github.io/chatbot"; 
-    // -----------------------------------------
+    // Flag per caricamento locale vs remoto
+    const LOAD_REMOTELY = false; // Imposta a true per caricare da GitHub Pages
 
-    // Lista degli script da caricare in ordine
+    // Definisci BASE_URL dinamicamente
+    const BASE_URL = LOAD_REMOTELY ? "https://zeroskill830.github.io/chatbot" : "chatbot";
+    console.log(`Loader: Utilizzo BASE_URL: ${BASE_URL}`);
+
+    // Esponi BASE_URL globalmente per altri script (es. Lottie path)
+    window.CHATBOT_BASE_URL = BASE_URL;
+
+    // Lista degli script da caricare in ordine (usa BASE_URL)
     const chatbotScripts = [
         `${BASE_URL}/chatbot-ui.js`,          // Prima la UI
         `${BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
-        `${BASE_URL}/chatbot-core.js`          // Infine il core che usa gli altri due
+        `${BASE_URL}/chatbot-core.js`,          // Infine il core che usa gli altri due
+        `${BASE_URL}/chatbot-lottie.js`         // Infine il core che usa gli altri due
     ];
     
-    // Lista dei CSS da caricare (variables.css per primo!)
+    // Lista dei CSS da caricare (variables.css per primo!) (usa BASE_URL)
     const chatbotStyleURLs = [
         `${BASE_URL}/styles/variables.css`, // <-- CARICA PRIMA!
         `${BASE_URL}/styles/chatbot-container.css`,
@@ -74,6 +80,12 @@
                 await loadCSS(cssURL);
             }
             console.log("Loader: Tutti i CSS caricati.");
+
+            // Carica la libreria Lottie
+            console.log("Loader: Caricamento libreria Lottie...");
+            const lottieURL = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js";
+            await loadScript(lottieURL);
+            console.log("Loader: Libreria Lottie caricata.");
 
             // Carica tutti gli script del chatbot in sequenza
             for (const scriptURL of chatbotScripts) {

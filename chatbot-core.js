@@ -40,6 +40,11 @@ class Chatbot {
             document.body.appendChild(this.elements.chatContainer);
             console.log("Chatbot Core: DOM creato", this.elements);
 
+            // Salva riferimento all'animazione Lottie (se presente)
+            if (this.elements.lottieAnimation) {
+                console.log("Chatbot Core: Riferimento animazione Lottie salvato.");
+            }
+
             // 2. Inizializzare il gestore messaggi (da chatbot-message-handler.js)
             ChatbotMessageHandler.initializeMessageHandler(
                 this.elements.messageInput,
@@ -59,7 +64,12 @@ class Chatbot {
         console.log("Chatbot Core: Toggle richiesto");
         this.isOpen = !this.isOpen;
         // Chiamare la funzione UI per aggiornare la visibilità
-        ChatbotUI.toggleVisibility(this.elements.chatContainer, this.elements.toggleButton, this.isOpen);
+        ChatbotUI.toggleVisibility(
+            this.elements.chatContainer,
+            this.elements.toggleButton,
+            this.isOpen,
+            this.elements.lottieAnimation // Passa l'animazione Lottie
+        );
         console.log(`Chatbot Core: Stato ${this.isOpen ? 'aperto' : 'chiuso'}`);
     }
 
@@ -73,12 +83,18 @@ class Chatbot {
         // 2. Pulisci input (usando la UI)
         ChatbotUI.clearInput(this.elements.messageInput);
 
-        // 3. Genera e mostra risposta bot (logica semplice per ora)
+        // 3. Mostra indicatore di scrittura
+        const typingIndicator = ChatbotUI.displayTypingIndicator(this.elements.messageArea);
+
+        // 4. Genera e mostra risposta bot (logica semplice per ora)
         // Simula un piccolo ritardo per la risposta
         setTimeout(() => {
+            // Rimuovi indicatore di scrittura
+            ChatbotUI.removeTypingIndicator(typingIndicator);
+
             const botResponse = `Hai detto: ${text}`;
             ChatbotUI.displayMessage(this.elements.messageArea, botResponse, 'bot');
-        }, 500);
+        }, 1500); // Aumentato leggermente il timeout per vedere l'indicatore
     }
 
     // Metodo statico per caricare CSS (potrebbe rimanere qui o spostato)

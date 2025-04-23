@@ -24,8 +24,8 @@
     --chatbot-close-button-hover-opacity: 1;
 
     /* Colori Bottone Toggle */
-    --chatbot-toggle-bg: #6a11cb; /* Viola */
-    --chatbot-toggle-bg-hover: #2575fc; /* Blu per hover */
+    --chatbot-toggle-bg: white; /* Viola */
+    --chatbot-toggle-bg-hover: #7f17344d; /* Blu per hover */
     --chatbot-toggle-text: #ffffff;
 
     /* Ombre */
