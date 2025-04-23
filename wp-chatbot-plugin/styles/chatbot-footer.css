@@ -12,7 +12,7 @@
     font-size: 0.75rem;
     color: #aaa;
     text-align: center;
-    padding: 5px 0;
+    padding: 10px 0;
     border-top: 1px solid var(--chatbot-border-color);
     a {
         color: #666;

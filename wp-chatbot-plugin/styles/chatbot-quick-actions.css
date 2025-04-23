@@ -27,9 +27,9 @@
 
 .chatbot-quick-action-button {
   background-color: var(--chatbot-secondary-bg-color, #f0f0f0); /* Sfondo leggermente diverso */
-  color: var(--chatbot-accent-color, #333); /* Colore testo primario o accent */
-  border: 1px solid var(--chatbot-border-color, #ddd); /* Bordo sottile */
-  border-radius: 15px; /* Angoli arrotondati */
+  color: #333; /* Colore testo primario o accent */
+  border: 2px solid var(--chatbot-border-color, #ddd); /* Bordo sottile */
+  border-radius: 8px; /* Angoli arrotondati */
   padding: 6px 12px; /* Padding interno */
   font-size: 0.85rem; /* Dimensione testo */
   font-family: inherit; /* Eredita font */

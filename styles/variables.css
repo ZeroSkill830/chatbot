@@ -21,7 +21,7 @@
     /* Colori Elementi Interattivi */
     --chatbot-accent-color: #7F1734;
     /* Blu primario per bottoni/focus */
-    --chatbot-accent-color-hover: #0056b3;
+    --chatbot-accent-color-hover: #7F1734;
     --chatbot-focus-shadow: rgba(0, 123, 255, 0.25);
     --chatbot-close-button-color: #ffffff;
     --chatbot-close-button-hover-opacity: 1;
@@ -29,7 +29,7 @@
     /* Colori Bottone Toggle */
     --chatbot-toggle-bg: white;
     /* Viola */
-    --chatbot-toggle-bg-hover: #7f17344d;
+    --chatbot-toggle-bg-hover: #e9bfcb;
     /* Blu per hover */
     --chatbot-toggle-text: #ffffff;
 

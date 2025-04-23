@@ -5,7 +5,7 @@
     max-width: 80%; /* Larghezza massima della bolla */
     line-height: 1.4; /* Interlinea per leggibilità */
     word-wrap: break-word; /* Va a capo se parole lunghe */
-    font-size: 0.95rem; /* Dimensione testo leggermente ridotta */
+    font-size: 0.9rem; /* Dimensione testo leggermente ridotta */
 }
 
 /* Stili per i messaggi dell'utente */

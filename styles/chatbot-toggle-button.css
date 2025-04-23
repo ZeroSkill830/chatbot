@@ -6,12 +6,12 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background-color: var(--chatbot-toggle-bg); 
     color: var(--chatbot-toggle-text); /* Già usa variabile */
     border: none;
-    border-radius: 22px;
+    border-radius: 16px;
     line-height: 1; /* Aiuta a centrare l'icona */
     cursor: pointer;
     box-shadow: 0 4px 12px var(--chatbot-toggle-shadow); /* Ombra più definita */
