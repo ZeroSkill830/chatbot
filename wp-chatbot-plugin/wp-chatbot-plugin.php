@@ -22,6 +22,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Funzione per accodare script e stili
 function wpcbp_enqueue_chatbot_assets() {
     $plugin_url = plugin_dir_url( __FILE__ );
+    $lottie_version = '5.12.2'; // Versione di Lottie
+
+    // Accoda Google Font (Urbanist)
+    wp_enqueue_style( 'google-fonts-urbanist', 'https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap', array(), null );
 
     // Accoda CSS
     wp_enqueue_style( 'wpcbp-variables', $plugin_url . 'styles/variables.css' );
@@ -35,13 +39,19 @@ function wpcbp_enqueue_chatbot_assets() {
     wp_enqueue_style( 'wpcbp-footer', $plugin_url . 'styles/chatbot-footer.css', array('wpcbp-variables') );
     wp_enqueue_style( 'wpcbp-toggle-button', $plugin_url . 'styles/chatbot-toggle-button.css', array('wpcbp-variables') );
 
-    // Accoda JS nel footer
-    // Nota: WordPress gestisce le dipendenze se specificate. Qui le accodiamo in ordine.
+    // Accoda Libreria Lottie da CDN
+    wp_enqueue_script( 'lottie-web', 'https://cdnjs.cloudflare.com/ajax/libs/lottie-web/' . $lottie_version . '/lottie.min.js', array(), $lottie_version, true );
+
+    // Accoda JS nel footer con dipendenze corrette
     wp_enqueue_script( 'wpcbp-chatbot-ui', $plugin_url . 'js/chatbot-ui.js', array(), null, true );
-    wp_enqueue_script( 'wpcbp-chatbot-lottie', $plugin_url . 'js/chatbot-lottie.js', array('wpcbp-chatbot-ui'), null, true );
-    wp_enqueue_script( 'wpcbp-chatbot-handler', $plugin_url . 'js/chatbot-message-handler.js', array('wpcbp-chatbot-ui'), null, true ); // Dipende da UI?
-    wp_enqueue_script( 'wpcbp-chatbot-core', $plugin_url . 'js/chatbot-core.js', array('wpcbp-chatbot-handler'), null, true ); // Dipende da UI e Handler?
-    wp_enqueue_script( 'wpcbp-chatbot-init', $plugin_url . 'js/chatbot-init.js', array('wpcbp-chatbot-core'), null, true ); // Dipende da Core
+    // Lo script lottie custom dipende dalla libreria Lottie e dalla UI
+    wp_enqueue_script( 'wpcbp-chatbot-lottie', $plugin_url . 'js/chatbot-lottie.js', array('lottie-web', 'wpcbp-chatbot-ui'), null, true );
+    // Handler dipende dalla UI
+    wp_enqueue_script( 'wpcbp-chatbot-handler', $plugin_url . 'js/chatbot-message-handler.js', array('wpcbp-chatbot-ui'), null, true );
+    // Core dipende da UI, Handler e Lottie (se interagisce con animazioni)
+    wp_enqueue_script( 'wpcbp-chatbot-core', $plugin_url . 'js/chatbot-core.js', array('wpcbp-chatbot-ui', 'wpcbp-chatbot-handler', 'wpcbp-chatbot-lottie'), null, true );
+    // Init dipende dal Core
+    wp_enqueue_script( 'wpcbp-chatbot-init', $plugin_url . 'js/chatbot-init.js', array('wpcbp-chatbot-core'), null, true );
 
 }
 
