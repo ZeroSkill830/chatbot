@@ -155,21 +155,38 @@ const ChatbotUI = {
     },
 
     /**
-     * Aggiunge un messaggio all'area di visualizzazione.
+     * Helper interno per convertire link stile Markdown in tag <a> HTML.
+     * @param {string} text - Il testo da parsare.
+     * @returns {string} Il testo con i link convertiti in HTML.
+     */
+    _parseMarkdownLinks(text) {
+        // Regex per trovare [Testo](URL)
+        // Cattura: gruppo 1 = Testo, gruppo 2 = URL
+        // Corretta regex con escaping appropriato
+        const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+        return text.replace(markdownLinkRegex, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    },
+
+    /**
+     * Aggiunge un messaggio all'area di visualizzazione, parsando i link Markdown.
      * @param {HTMLElement} messageArea - L'elemento dove aggiungere i messaggi.
-     * @param {string} text - Il testo del messaggio.
-     * @param {'user' | 'bot'} sender - Chi ha inviato il messaggio.
+     * @param {string} text - Il testo del messaggio (potrebbe contenere link Markdown).
+     * @param {'user' | 'bot' | 'error'} sender - Chi ha inviato il messaggio.
      */
     displayMessage(messageArea, text, sender) {
         if (!messageArea || !text) return;
         const messageElement = document.createElement('div');
         messageElement.classList.add('chatbot-message', `chatbot-message-${sender}`);
-        messageElement.textContent = text;
+        
+        // --- NUOVO: Parsa il testo per i link prima di inserirlo --- 
+        const parsedText = (sender === 'bot' || sender === 'error') ? this._parseMarkdownLinks(text) : text;
+        messageElement.innerHTML = parsedText; // Usa il testo parsato
+        
         messageArea.appendChild(messageElement);
 
         // Scroll automatico
         messageArea.scrollTop = messageArea.scrollHeight;
-        console.log(`Chatbot UI: Messaggio [${sender}] visualizzato: ${text}`);
+        console.log(`Chatbot UI: Messaggio [${sender}] visualizzato (come HTML, link parsati).`);
     },
 
     /**

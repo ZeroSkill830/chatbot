@@ -1,6 +1,6 @@
 (function () {
     // Flag per caricamento locale vs remoto
-    const LOAD_REMOTELY = true; // Imposta a true per caricare da GitHub Pages
+    const LOAD_REMOTELY = false; // Imposta a true per caricare da GitHub Pages
 
     // Definisci BASE_URL dinamicamente
     const BASE_URL = LOAD_REMOTELY ? "https://zeroskill830.github.io/chatbot" : ".";
@@ -92,9 +92,54 @@
         });
     }
 
-    // Funzione per inizializzare il chatbot (logica aggiornata per Shadow DOM)
+    // Funzione per ottenere il token di autenticazione
+    async function fetchAuthToken() {
+        const tokenUrl = 'https://macaw-eager-gradually.ngrok-free.app/auth/token'; // <-- CONFIGURARE QUESTO URL!
+        console.log("Loader: Tentativo di ottenere token da", tokenUrl);
+        try {
+            // Assumiamo un metodo POST senza corpo, da adattare se necessario
+            const response = await fetch(tokenUrl, {
+                method: 'POST', // o 'GET', a seconda dell'API
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Aggiungere altri header se richiesti dall'API auth/token
+                },
+                body: JSON.stringify({ clientId: 'discord' }) // Aggiungere corpo se necessario
+            });
+
+            if (!response.ok) {
+                throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json(); 
+            // Assumiamo che il token sia in una proprietà 'accessToken' o 'token'
+            const token = data.accessToken || data.token;
+            if (!token) {
+                 throw new Error("Token non trovato nella risposta dell'API.");
+            }
+            console.log("Loader: Token ottenuto con successo.");
+            window.chatbotAuthToken = token; // Memorizza il token globalmente
+            return token;
+        } catch (error) {
+            console.error("Loader: Impossibile ottenere il token di autenticazione:", error);
+            window.chatbotAuthToken = null; // Assicura che sia null in caso di errore
+            // Potrebbe essere utile impedire ulteriori inizializzazioni o mostrare un errore
+            return null;
+        }
+    }
+
+    // Funzione per inizializzare il chatbot (modificata)
     async function initializeChatbot() {
         try {
+            // *** NUOVO: Ottieni prima il token ***
+            const authToken = await fetchAuthToken();
+            if (!authToken) {
+                console.error("Loader: Inizializzazione interrotta - Token non disponibile.");
+                // Qui potresti decidere di non procedere o mostrare un messaggio all'utente
+                // return; // Decommenta per bloccare l'inizializzazione in caso di fallimento token
+            }
+            console.log("Loader: Procedo con l'inizializzazione del chatbot...");
+
             // 1. Carica gli script essenziali per la creazione della UI e Core
             // Assicurati che l'ordine sia corretto per le dipendenze
             await loadScript(`${BASE_URL}/chatbot-ui.js`);
@@ -117,7 +162,13 @@
             // Assicurati che chatbot-lottie.js sia caricato DOPO Lottie e DOPO la creazione del DOM
             await loadScript(`${BASE_URL}/chatbot-lottie.js`);
 
-            await chatbotInstance.initialize({ loadCSSInShadow, loadGoogleFontInShadow, chatbotStyleURLs }); // Passa le funzioni/dati necessari
+            await chatbotInstance.initialize({ 
+                loadCSSInShadow, 
+                loadGoogleFontInShadow, 
+                chatbotStyleURLs,
+                // Potresti passare anche il token qui se preferisci, invece di globale
+                // authToken: authToken 
+            });
 
         } catch (error) {
             console.error("Errore durante l'inizializzazione del chatbot:", error);
