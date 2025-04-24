@@ -84,9 +84,9 @@ const ChatbotUI = {
 
         // --- Popola Quick Actions (dentro Shadow DOM) ---
         const quickActions = [
-            "Miglior vino rosso? 🍷" ,
-            "Fate degustazioni? 🥂",
-            "Vini in offerta 🏷️",
+            "Conosci la nostra azienda 🏡" ,
+            "Organizzate visite? 📅",
+            "Degustiamo insieme! 🥂",
         ];
 
         quickActions.forEach(actionText => {
