@@ -155,6 +155,12 @@
             const chatbotInstance = new Chatbot();
             window.chatbotInstance = chatbotInstance;
 
+            // Carica Lottie prima di chatbot-lottie.js
+            const lottieURL = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js";
+            await loadScript(lottieURL);
+            console.log("Loader: Libreria Lottie caricata.");
+
+
             await chatbotInstance.initialize({ 
                 loadCSSInShadow, 
                 loadGoogleFontInShadow, 
