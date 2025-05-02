@@ -1,0 +1,203 @@
+.wine-tasting-modal {
+    font-family: var(--chatbot-font);
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 390px;
+    height: 600px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.wine-tasting-modal-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wine-tasting-modal-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.wine-tasting-modal-header h2 {
+    margin: 0;
+    color: #1a1a1a;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.stage-indicator {
+    background-color: #f8f9fa;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -8px;
+}
+
+.close-button:hover {
+    background-color: #f8f9fa;
+}
+
+.wine-tasting-modal-body {
+    padding: 32px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.chunk-content {
+    margin-bottom: 32px;
+    line-height: 1.6;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.chunk-text {
+    margin-bottom: 24px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.feedback-prompt {
+    font-style: italic;
+    color: #666;
+    border-left: 4px solid #4CAF50;
+    padding-left: 16px;
+    margin-top: 16px;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+    padding: 16px 20px;
+    border-radius: 8px;
+}
+
+.feedback-input-container {
+    margin-top: 24px;
+}
+
+.feedback-input {
+    width: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.feedback-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.wine-tasting-modal-footer {
+    padding: 24px 32px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.next-chunk-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 24px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.next-chunk-button:hover {
+    background-color: #43a047;
+}
+
+.next-chunk-button:active {
+    transform: scale(0.98);
+}
+
+.next-chunk-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.chunk-progress {
+    color: #666;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.loader-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 16px;
+}
+
+.loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4CAF50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animazioni per la transizione dei chunks */
+.chunk-text.slide-out-left,
+.feedback-prompt.slide-out-left {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.chunk-text.slide-in-right,
+.feedback-prompt.slide-in-right {
+    opacity: 1;
+    transform: translateX(0);
+} 

@@ -93,13 +93,18 @@ const ChatbotUI = {
             const button = document.createElement('button');
             button.className = 'chatbot-quick-action-button';
             button.textContent = actionText;
-            button.onclick = () => {
-                // Chiama la funzione per inviare il messaggio
-                // Usa la callback passata invece di cercare l'istanza globale
-                if (typeof sendMessageCallback === 'function') {
-                    sendMessageCallback(actionText);
+            button.onclick = async () => {
+                if (actionText === "Degustiamo insieme! 🥂") {
+                    // Usa la classe WineExperience globalmente
+                    const wineExperience = new window.WineExperience();
+                    await wineExperience.fetchWines();
                 } else {
-                    console.error("Chatbot UI: sendMessageCallback non è una funzione valida!");
+                    // Per le altre quick actions, comportamento normale
+                    if (typeof sendMessageCallback === 'function') {
+                        sendMessageCallback(actionText);
+                    } else {
+                        console.error("Chatbot UI: sendMessageCallback non è una funzione valida!");
+                    }
                 }
             };
             quickActionsContainer.appendChild(button);

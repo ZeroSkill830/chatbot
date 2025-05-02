@@ -8,7 +8,7 @@
     bottom: 120px; /* Aumentato leggermente per più spazio dal bottone */
     right: 20px;
     width: 390px; /* Leggermente più largo */
-    height: 550px; /* Usiamo altezza fissa come da tua modifica precedente */
+    height: 600px; /* Usiamo altezza fissa come da tua modifica precedente */
     background: linear-gradient(to bottom, #ffffff, var(--chatbot-footer-bg)); /* Gradiente richiesto */
     /* border: 1px solid #eee; Rimosso bordo, usiamo solo shadow */
     border-radius: var(--chatbot-border-radius-container); /* Usa variabile */

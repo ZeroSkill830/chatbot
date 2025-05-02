@@ -1,0 +1,109 @@
+.wines-title {
+    color: #2c3e50;
+    margin-bottom: 0;
+    font-size: 1.5em;
+}
+
+.wine-cards-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 20px;
+    padding-top: 40px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+}
+
+/* Nasconde la scrollbar per Chrome, Safari e Opera */
+.wine-cards-container::-webkit-scrollbar {
+    display: none;
+}
+
+.wine-card {
+    background-color: #E5D1E1;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    min-width: 220px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.wine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    background-color: #dcc4d8;
+}
+
+.wine-image {
+    width: 90px;
+    height: auto;
+    object-fit: contain;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: all 0.3s ease;
+    transform-origin: bottom;
+}
+
+.wine-card:hover .wine-image {
+    transform: translateY(-10px) rotate(-5deg) scale(1.1);
+}
+
+.wine-info {
+    flex: 1;
+    z-index: 1;
+}
+
+.wine-name {
+    color: #000;
+    margin: 0 0 8px 0;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.wine-type {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+
+.wine-quantity {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+.wine-price {
+    color: #000;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Nascondiamo temporaneamente le altre informazioni */
+.wine-producer, .wine-region, .wine-vintage, .wine-grapes {
+    display: none;
+}
+
+/* Stile per lo scrollbar orizzontale */
+.wine-cards-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.wine-cards-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.wine-cards-container::-webkit-scrollbar-thumb {
+    background: #E5D1E1;
+    border-radius: 4px;
+}
+
+.wine-cards-container::-webkit-scrollbar-thumb:hover {
+    background: #dcc4d8;
+} 

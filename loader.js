@@ -10,7 +10,8 @@
 
     // Lista degli script da caricare in ordine (usa BASE_URL)
     const chatbotScripts = [
-        `${BASE_URL}/chatbot-ui.js`,          // Prima la UI
+        `${BASE_URL}/wine-experience.js`,         // Prima l'esperienza dei vini
+        `${BASE_URL}/chatbot-ui.js`,          // Poi la UI
         `${BASE_URL}/chatbot-message-handler.js`, // Poi il gestore messaggi
         `${BASE_URL}/chatbot-core.js`,          // Infine il core che usa gli altri due
         `${BASE_URL}/chatbot-lottie.js`         // Infine il core che usa gli altri due
@@ -28,6 +29,8 @@
         `${BASE_URL}/styles/chatbot-send-button.css`,
         `${BASE_URL}/styles/chatbot-toggle-button.css`,
         `${BASE_URL}/styles/chatbot-quick-actions.css`,
+        `${BASE_URL}/wine-experience.css`, // Aggiungo il CSS per l'esperienza dei vini
+        `${BASE_URL}/wine-tasting-modal.css`, // CSS per il modal di degustazione
         // Aggiungere qui eventuali altri file CSS globali se necessario
     ];
 
@@ -135,39 +138,27 @@
             const authToken = await fetchAuthToken();
             if (!authToken) {
                 console.error("Loader: Inizializzazione interrotta - Token non disponibile.");
-                // Qui potresti decidere di non procedere o mostrare un messaggio all'utente
-                // return; // Decommenta per bloccare l'inizializzazione in caso di fallimento token
+                return;
             }
-            console.log("Loader: Procedo con l'inizializzazione del chatbot...");
 
-            // 1. Carica gli script essenziali per la creazione della UI e Core
-            // Assicurati che l'ordine sia corretto per le dipendenze
-            await loadScript(`${BASE_URL}/chatbot-ui.js`);
-            await loadScript(`${BASE_URL}/chatbot-message-handler.js`); // Se Chatbot dipende da questo
-            await loadScript(`${BASE_URL}/chatbot-core.js`); // Contiene la classe Chatbot
+            // Carica tutti gli script in ordine
+            for (const scriptUrl of chatbotScripts) {
+                await loadScript(scriptUrl);
+            }
 
             if (typeof ChatbotUI === 'undefined' || typeof Chatbot === 'undefined') {
                 console.error("Loader: ChatbotUI o Chatbot non definiti dopo caricamento script.");
                 return;
             }
 
-            // 2. Crea l'istanza del Chatbot
-            // L'istanza ora gestirà la creazione del DOM interno
+            // Crea l'istanza del Chatbot
             const chatbotInstance = new Chatbot();
-            window.chatbotInstance = chatbotInstance; // Rendi globale se necessario
-
-            const lottieURL = "https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js";
-            await loadScript(lottieURL);
-            // 6. Carica script rimanenti (es. chatbot-lottie.js)
-            // Assicurati che chatbot-lottie.js sia caricato DOPO Lottie e DOPO la creazione del DOM
-            await loadScript(`${BASE_URL}/chatbot-lottie.js`);
+            window.chatbotInstance = chatbotInstance;
 
             await chatbotInstance.initialize({ 
                 loadCSSInShadow, 
                 loadGoogleFontInShadow, 
-                chatbotStyleURLs,
-                // Potresti passare anche il token qui se preferisci, invece di globale
-                // authToken: authToken 
+                chatbotStyleURLs
             });
 
         } catch (error) {
