@@ -39,6 +39,16 @@ const ChatbotUI = {
         const chatContainer = document.createElement('div');
         chatContainer.className = 'chatbot-container';
 
+        // --- FIX: Impedisci scroll pagina quando si scrolla sul container ---
+        chatContainer.addEventListener('wheel', (event) => {
+            // Questo previene lo scroll della pagina *e* lo scroll interno di default.
+            // Lo scroll interno di messageArea dovrebbe comunque funzionare 
+            // perché è un elemento scrollabile separato.
+            event.preventDefault();
+            event.stopPropagation();
+        }, { passive: false });
+        // --- FINE FIX ---
+
         // --- Header ---
         const header = document.createElement('div');
         header.className = 'chatbot-header';
