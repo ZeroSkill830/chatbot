@@ -201,3 +201,15 @@
     opacity: 1;
     transform: translateX(0);
 } 
+
+
+/* Stili per il modale di degustazione su mobile */
+@media (max-width: 768px) {
+    .wine-tasting-modal {
+        width: 100%!important;
+        height: 90%!important;
+        bottom: 0!important;
+        right: 0!important;
+        left: 0!important;
+    }
+} 

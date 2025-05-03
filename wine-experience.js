@@ -72,7 +72,8 @@ const WineExperience = class {
                 body: JSON.stringify({
                     wineName: wineName,
                     userId: 'user',
-                    stage: stages[0]
+                    stage: stages[0],
+                    language: 'it'
                 })
             });
 
