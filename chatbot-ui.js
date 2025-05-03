@@ -39,15 +39,46 @@ const ChatbotUI = {
         const chatContainer = document.createElement('div');
         chatContainer.className = 'chatbot-container';
 
-        // --- FIX: Impedisci scroll pagina quando si scrolla sul container ---
+        // Rimuovi il listener precedente (se applicato)
+        // chatContainer.removeEventListener('wheel', ...);
+
+        // --- NUOVO FIX: Gestione scroll più specifica ---
         chatContainer.addEventListener('wheel', (event) => {
-            // Questo previene lo scroll della pagina *e* lo scroll interno di default.
-            // Lo scroll interno di messageArea dovrebbe comunque funzionare 
-            // perché è un elemento scrollabile separato.
-            event.preventDefault();
-            event.stopPropagation();
+            const messageArea = chatContainer.querySelector('.chatbot-message-area');
+            if (!messageArea) return; // Sicurezza
+
+            const targetElement = event.target;
+            const isTargetInsideMessageArea = messageArea.contains(targetElement);
+
+            if (!isTargetInsideMessageArea) {
+                // Evento wheel fuori dall'area messaggi (es. header/footer)
+                event.preventDefault(); // Blocca lo scroll della pagina
+                event.stopPropagation();
+            } else {
+                // Evento wheel dentro l'area messaggi
+                const element = messageArea;
+                const isScrollable = element.scrollHeight > element.clientHeight;
+
+                if (!isScrollable) {
+                    // Area messaggi non scrollabile, blocca scroll pagina
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    const isScrollingUp = event.deltaY < 0;
+                    const isAtTop = element.scrollTop <= 0; // <= 0 per sicurezza
+                    // Usiamo Math.ceil per gestire possibili valori decimali e tolleranza
+                    const isAtBottom = Math.ceil(element.scrollTop + element.clientHeight) >= element.scrollHeight -1; // -1 tolleranza
+
+                    if ((isScrollingUp && isAtTop) || (!isScrollingUp && isAtBottom)) {
+                        // Scroll interno ai limiti: blocca solo scroll pagina
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    // Altrimenti (scroll interno valido): non fare nulla, lascia scrollare messageArea
+                }
+            }
         }, { passive: false });
-        // --- FINE FIX ---
+        // --- FINE NUOVO FIX ---
 
         // --- Header ---
         const header = document.createElement('div');
@@ -76,12 +107,6 @@ const ChatbotUI = {
         // --- Area Messaggi ---
         const messageArea = document.createElement('div');
         messageArea.className = 'chatbot-message-area';
-
-        // --- NUOVO: Impedisci la propagazione dello scroll alla pagina principale ---
-        messageArea.addEventListener('scroll', (event) => {
-            event.stopPropagation();
-        }, { passive: true }); // Usa passive: true per ottimizzazione se non chiami preventDefault
-        // --- FINE NUOVO ---
 
         // --- Quick Actions Container ---
         const quickActionsContainer = document.createElement('div');
