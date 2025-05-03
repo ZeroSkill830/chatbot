@@ -19,62 +19,63 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    background-color: white;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .wine-tasting-modal-header {
-    padding: 24px 32px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--chatbot-border-color, #e0e0e0);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
+    background: var(--chatbot-header-bg, #f8f9fa);
+    flex-shrink: 0;
 }
 
 .wine-tasting-modal-header h2 {
     margin: 0;
-    color: #1a1a1a;
-    font-size: 1.75rem;
-    font-weight: 600;
+    color: var(--chatbot-header-text, #333);
+    font-size: 1.1rem;
+    font-weight: 500;
     line-height: 1.2;
 }
 
 .stage-indicator {
-    background-color: #f8f9fa;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: var(--chatbot-header-text, #333);
+    font-weight: 400;
+    text-transform: capitalize;
 }
 
 .close-button {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
-    color: #666;
-    padding: 8px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: -8px;
+    color: var(--chatbot-close-button-color, #666);
+    padding: 0 4px;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
 }
 
 .close-button:hover {
-    background-color: #f8f9fa;
+    opacity: var(--chatbot-close-button-hover-opacity, 1);
+    background-color: transparent;
 }
 
 .wine-tasting-modal-body {
-    padding: 32px;
+    padding: 20px;
     flex-grow: 1;
     overflow-y: auto;
+    background-color: var(--chatbot-bg, #fff);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .chunk-content {
@@ -88,18 +89,20 @@
     margin-bottom: 24px;
     opacity: 1;
     transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    font-size: 0.9rem;
 }
 
 .feedback-prompt {
     font-style: italic;
     color: #666;
-    border-left: 4px solid #4CAF50;
+    border-left: 4px solid var(--chatbot-accent-color);
     padding-left: 16px;
     margin-top: 16px;
-    font-size: 1rem;
+    font-size: 0.85rem;
     background-color: #f8f9fa;
     padding: 16px 20px;
     border-radius: 8px;
+    font-weight: 600;
 }
 
 .feedback-input-container {
@@ -118,23 +121,23 @@
 
 .feedback-input:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--chatbot-accent-color);
 }
 
 .wine-tasting-modal-footer {
-    padding: 24px 32px;
-    border-top: 1px solid #f0f0f0;
+    padding: 15px 20px;
+    border-top: 1px solid var(--chatbot-border-color, #e0e0e0);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
+    background-color: var(--chatbot-footer-bg, #f8f9fa);
 }
 
 .next-chunk-button {
     padding: 12px 24px;
     border: none;
     border-radius: 24px;
-    background-color: #4CAF50;
+    background-color: var(--chatbot-accent-color);
     color: white;
     font-size: 1rem;
     font-weight: 500;
@@ -143,7 +146,7 @@
 }
 
 .next-chunk-button:hover {
-    background-color: #43a047;
+    background-color: var(--chatbot-red-wine-card-bg-hover);
 }
 
 .next-chunk-button:active {
@@ -179,7 +182,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid #f3f3f3;
-    border-top: 3px solid #4CAF50;
+    border-top: 3px solid var(--chatbot-accent-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }

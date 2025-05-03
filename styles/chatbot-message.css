@@ -14,6 +14,7 @@
     color: var(--chatbot-message-user-text); /* Usa variabile */
     align-self: flex-end; /* Allinea a destra */
     border-bottom-right-radius: 4px; /* Piccolo aggiustamento estetico angolo */
+    margin-right: 16px;
 }
 
 /* Stili per i messaggi del bot */
