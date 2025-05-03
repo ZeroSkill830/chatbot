@@ -67,6 +67,12 @@ const ChatbotUI = {
         const messageArea = document.createElement('div');
         messageArea.className = 'chatbot-message-area';
 
+        // --- NUOVO: Impedisci la propagazione dello scroll alla pagina principale ---
+        messageArea.addEventListener('scroll', (event) => {
+            event.stopPropagation();
+        }, { passive: true }); // Usa passive: true per ottimizzazione se non chiami preventDefault
+        // --- FINE NUOVO ---
+
         // --- Quick Actions Container ---
         const quickActionsContainer = document.createElement('div');
         quickActionsContainer.className = 'chatbot-quick-actions-container';
