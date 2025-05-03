@@ -1,5 +1,8 @@
 // chatbot-ui.js
 
+// Inizializza la lingua globale all'avvio dello script
+window.chatbotLanguage = 'it'; // Lingua predefinita
+
 
 const ChatbotUI = {
     /**
@@ -40,7 +43,19 @@ const ChatbotUI = {
         const header = document.createElement('div');
         header.className = 'chatbot-header';
         header.innerHTML = `
-            <span>Hai bisogno di aiuto? <br> Chiedimi quello che vuoi! 💬</span>
+            <div class="chatbot-header-wrapper"> 
+                <div class="chatbot-avatar">
+                    <img src="https://cdn-icons-png.freepik.com/256/1698/1698535.png" alt="Agento Wine">
+                </div>
+                <div class="chatbot-header-container"> 
+                    <span class="chatbot-title">Agento Wine</span>
+                    <span class="chatbot-status">
+                        <span class="chatbot-pulse-dot"></span>
+                        Online
+                    </span>
+                </div>
+            </div>
+            
             <button class="chatbot-close-button">&times;</button>
         `;
         const closeButton = header.querySelector('.chatbot-close-button');
@@ -59,14 +74,35 @@ const ChatbotUI = {
         // --- Footer (Input e Bottone Invia) ---
         const footer = document.createElement('div');
         footer.className = 'chatbot-footer';
+
+        // --- NUOVO: Selettore Lingua ---
+        const languageSelector = document.createElement('select');
+        languageSelector.className = 'chatbot-language-selector';
+        languageSelector.innerHTML = `
+            <option value="it">IT</option>
+            <option value="en">EN</option>
+        `;
+        languageSelector.value = window.chatbotLanguage; // Imposta il valore iniziale
+
+        // Aggiungi listener per aggiornare la lingua globale
+        languageSelector.onchange = (event) => {
+            window.chatbotLanguage = event.target.value;
+            console.log(`Chatbot UI: Lingua cambiata in ${window.chatbotLanguage}`);
+            // Qui potresti aggiungere logica per aggiornare l'UI se necessario
+            // Esempio: Aggiornare testo quick actions, placeholder, ecc. (non richiesto ora)
+        };
+        // --- FINE NUOVO ---
+
         const messageInput = document.createElement('input');
         messageInput.type = 'text';
-        messageInput.placeholder = 'Scrivi un messaggio...';
+        messageInput.placeholder = 'Scrivi un messaggio...'; // Potrebbe essere tradotto in futuro
         messageInput.className = 'chatbot-input';
         const sendButton = document.createElement('button');
         sendButton.className = 'chatbot-send-button';
-        sendButton.textContent = 'Invia';
+        sendButton.textContent = 'Invia'; // Potrebbe essere tradotto in futuro
 
+        // Rimuovi l'append al footer
+        // footer.appendChild(languageSelector); // Aggiungi il selettore prima dell'input
         footer.appendChild(messageInput);
         footer.appendChild(sendButton);
 
@@ -79,7 +115,11 @@ const ChatbotUI = {
         // --- Branding --- 
         const branding = document.createElement('div');
         branding.className = 'chatbot-branding';
-        branding.innerHTML = 'Made with ❤️ from <a href="https://x.com/agentolabs" target="_blank" rel="noopener noreferrer">AgentoLabs</a>'; // Testo con link
+        // Inserisci prima il selettore, poi il testo
+        branding.appendChild(languageSelector); // Aggiungi il selettore qui
+        const brandingText = document.createElement('span'); // Usa uno span per il testo
+        brandingText.innerHTML = ' Made with ❤️ from <a href="https://x.com/agentolabs" target="_blank" rel="noopener noreferrer">AgentoLabs</a>'; // Testo con link
+        branding.appendChild(brandingText); // Aggiungi il testo dopo il selettore
         chatContainer.appendChild(branding);
 
         // --- Popola Quick Actions (dentro Shadow DOM) ---
@@ -97,10 +137,14 @@ const ChatbotUI = {
                 if (actionText === "Degustiamo insieme! 🥂") {
                     // Usa la classe WineExperience globalmente
                     const wineExperience = new window.WineExperience();
-                    await wineExperience.fetchWines();
+                    await wineExperience.fetchWines(); // fetchWines non sembra dipendere dalla lingua selezionata qui
                 } else {
                     // Per le altre quick actions, comportamento normale
+                    // Il messaggio inviato è ancora il testo del bottone (in IT)
+                    // La lingua selezionata verrà usata dal backend se sendMessageCallback la passa
                     if (typeof sendMessageCallback === 'function') {
+                        // Qui potremmo passare la lingua se necessario, ma la richiesta originale
+                        // riguarda startWineTasting. sendMessageCallback probabilmente passa solo il testo.
                         sendMessageCallback(actionText);
                     } else {
                         console.error("Chatbot UI: sendMessageCallback non è una funzione valida!");
@@ -132,6 +176,7 @@ const ChatbotUI = {
             messageArea,
             quickActionsContainer,
             footer,
+            languageSelector, // Restituisci il riferimento al selettore
             messageInput,
             sendButton,
             closeButton,

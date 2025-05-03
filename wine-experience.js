@@ -73,7 +73,7 @@ const WineExperience = class {
                     wineName: wineName,
                     userId: 'user',
                     stage: stages[0],
-                    language: 'it'
+                    language: window.chatbotLanguage || 'it' // Usa la lingua globale o default a IT
                 })
             });
 
@@ -282,10 +282,30 @@ const WineExperience = class {
 
             // Aggiungi event listener per il click
             wineCard.addEventListener('click', async () => {
+                // Impedisci click multipli mentre carica
+                if (wineCard.classList.contains('loading')) {
+                    return;
+                }
+
+                // Aggiungi classe e loader
+                wineCard.classList.add('loading');
+                const loader = document.createElement('div');
+                loader.className = 'wine-card-loader'; // Applicheremo stile CSS
+                // Potresti aggiungere un'icona o animazione qui invece del testo
+                loader.innerHTML = '<div class="spinner"></div>'; 
+                wineCard.appendChild(loader);
+
                 try {
                     await this.startWineTasting(wine.name);
                 } catch (error) {
                     console.error('Errore durante l\'avvio della degustazione:', error);
+                    // Potresti mostrare un messaggio di errore sulla card qui se vuoi
+                } finally {
+                    // Rimuovi classe e loader indipendentemente dal risultato
+                    wineCard.classList.remove('loading');
+                    if (loader.parentNode === wineCard) { // Controllo sicurezza
+                        wineCard.removeChild(loader);
+                    }
                 }
             });
 
@@ -299,15 +319,15 @@ const WineExperience = class {
             wineName.className = 'wine-name';
             wineInfo.appendChild(wineName);
 
-            // Tipo di vino
+            // Produttore
             const wineType = document.createElement('p');
-            wineType.textContent = 'Wine type: Rosso brut';
+            wineType.textContent = `🍷 ${wine.producer}`;
             wineType.className = 'wine-type';
             wineInfo.appendChild(wineType);
 
-            // Quantità
+            // Regione
             const quantity = document.createElement('p');
-            quantity.textContent = 'Quantity: 1.5 L';
+            quantity.textContent = `📍 ${wine.region}`;
             quantity.className = 'wine-quantity';
             wineInfo.appendChild(quantity);
 

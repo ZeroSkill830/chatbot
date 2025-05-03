@@ -41,7 +41,6 @@
 .chatbot-quick-action-button:hover {
   background-color: var(--chatbot-accent-color-light, #e0e0e0); /* Sfondo leggermente più scuro/accentato su hover */
   border-color: var(--chatbot-accent-color, #ccc); /* Bordo leggermente più scuro/accentato */
-  color: var(--chatbot-accent-color-hover, #000); /* Colore testo su hover */
 }
 
 .chatbot-quick-action-button:active {
