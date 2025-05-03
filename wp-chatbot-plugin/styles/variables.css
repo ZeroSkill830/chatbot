@@ -3,7 +3,7 @@
 :host {
     /* Colori di Base */
     --chatbot-bg: #ffffff;
-    --chatbot-header-bg: #7F1734;
+    --chatbot-header-bg: #fe6f6f;
     --chatbot-header-text: #ffffff;
     --chatbot-footer-bg: #f8f9fa;
     --chatbot-text-primary: #333;
@@ -15,11 +15,11 @@
     /* Colori Messaggi */
     --chatbot-message-bot-bg: #f1f1f1;
     --chatbot-message-bot-text: #333333;
-    --chatbot-message-user-bg: linear-gradient(to bottom, #7F1734, #b51736);
+    --chatbot-message-user-bg: linear-gradient(to bottom, #fe6f6f, #e01a1a);
     --chatbot-message-user-text: #ffffff;
 
     /* Colori Elementi Interattivi */
-    --chatbot-accent-color: #7F1734;
+    --chatbot-accent-color: #fe6f6f;
     /* Blu primario per bottoni/focus */
     --chatbot-accent-color-hover: #0056b3;
     --chatbot-focus-shadow: rgba(0, 123, 255, 0.25);

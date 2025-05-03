@@ -9,9 +9,9 @@
     flex-direction: row;
     overflow-x: auto;
     gap: 20px;
-    padding-top: 40px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;     /* Firefox */
+    padding: 40px 0;
+    -ms-overflow-style: none;  
+    scrollbar-width: none;     
 }
 
 /* Nasconde la scrollbar per Chrome, Safari e Opera */
@@ -20,7 +20,7 @@
 }
 
 .wine-card {
-    background-color: #E5D1E1;
+    background-color: var(--chatbot-red-wine-card-bg);
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -35,15 +35,15 @@
 .wine-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    background-color: #dcc4d8;
+    background-color: var(--chatbot-red-wine-card-bg-hover);
 }
 
 .wine-image {
-    width: 90px;
+    width: 100px;
     height: auto;
     object-fit: contain;
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     right: 0;
     transition: all 0.3s ease;
     transform-origin: bottom;
@@ -59,27 +59,38 @@
 }
 
 .wine-name {
-    color: #000;
+    color: var(--chatbot-red-wine-card-text);
     margin: 0 0 8px 0;
-    font-size: 1.4em;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
+    padding-right: 35px;
 }
 
 .wine-type {
-    color: #666;
-    font-size: 0.9em;
+    color: black;
+    font-size: 0.8em;
+    background: white;
     margin-bottom: 8px;
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: -7px;
 }
 
 .wine-quantity {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 15px;
+    color: black;
+    font-size: 0.8em;
+    background: white;
+    margin-bottom: 8px;
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px
 }
 
 .wine-price {
-    color: #000;
-    font-size: 1.2em;
+    color: #f1f1f1;
+    font-size: 2em;
     font-weight: 600;
     margin: 0;
 }
@@ -100,10 +111,10 @@
 }
 
 .wine-cards-container::-webkit-scrollbar-thumb {
-    background: #E5D1E1;
+    background: var(--chatbot-red-wine-card-bg);
     border-radius: 4px;
 }
 
 .wine-cards-container::-webkit-scrollbar-thumb:hover {
-    background: #dcc4d8;
+    background: var(--chatbot-red-wine-card-bg-hover);
 }

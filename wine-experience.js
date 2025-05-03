@@ -73,7 +73,7 @@ const WineExperience = class {
                     wineName: wineName,
                     userId: 'user',
                     stage: stages[0],
-                    language: 'it'
+                    language: window.chatbotLanguage || 'it' // Usa la lingua globale o default a IT
                 })
             });
 
@@ -299,15 +299,15 @@ const WineExperience = class {
             wineName.className = 'wine-name';
             wineInfo.appendChild(wineName);
 
-            // Tipo di vino
+            // Produttore
             const wineType = document.createElement('p');
-            wineType.textContent = 'Wine type: Rosso brut';
+            wineType.textContent = `🍷 ${wine.producer}`;
             wineType.className = 'wine-type';
             wineInfo.appendChild(wineType);
 
-            // Quantità
+            // Regione
             const quantity = document.createElement('p');
-            quantity.textContent = 'Quantity: 1.5 L';
+            quantity.textContent = `📍 ${wine.region}`;
             quantity.className = 'wine-quantity';
             wineInfo.appendChild(quantity);
 

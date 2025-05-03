@@ -1,9 +1,8 @@
 /* Stili per l'header del chatbot */
 
 .chatbot-header {
-    padding: 20px 26px;
-    padding-bottom: 10px;
-    background: linear-gradient(to bottom, #7F1734, #b51736); /* Applicato nuovo gradiente */
+    padding: 15px 20px;
+    background: var(--chatbot-header-bg); /* Applicato nuovo gradiente */
     border-bottom: 1px solid var(--chatbot-border-color); /* Usa variabile */
     display: flex;
     justify-content: space-between; /* Titolo a sinistra, bottone a destra */
@@ -12,20 +11,43 @@
     position: relative; /* Necessario per il posizionamento assoluto del ::after */
 }
 
-/* Pseudo-elemento per l'onda SVG */
-.chatbot-header::after {
-    content: '';
-    position: absolute;
-    bottom: -50px;
-    left: 0;
-    width: 100%;
-    height: 50px; /* Altezza dell'onda, aggiustabile */
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'><path fill='%23b51736' fill-opacity='1' d='M0,160L60,138.7C120,117,240,75,360,96C480,117,600,203,720,213.3C840,224,960,160,1080,133.3C1200,107,1320,117,1380,122.7L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z'></path></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    pointer-events: none; /* Impedisce all'onda di intercettare i click */
-    z-index: 99; /* Assicura che sia dietro al contenuto se necessario */
+.chatbot-header-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.chatbot-header-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chatbot-avatar img{
+    width: 30px;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.chatbot-status{
+    font-size: 0.8rem;
+    color: var(--chatbot-header-text); /* Usa variabile (o primary?) */
+    line-height: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 300;
+}
+
+.chatbot-pulse-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--chatbot-pulse-dot-bg);
+    animation: pulse 2s infinite ease-in-out;
 }
 
 .chatbot-header span,
@@ -34,11 +56,10 @@
     z-index: 1;
 }
 
-.chatbot-header span {
-    font-weight: 600; /* Titolo leggermente in grassetto */
+.chatbot-title {
+    font-weight: 400; /* Titolo leggermente in grassetto */
     font-size: 1rem;
     color: var(--chatbot-header-text); /* Usa variabile (o primary?) */
-    line-height: 1.4rem;
 }
 
 .chatbot-header .chatbot-close-button {
@@ -55,4 +76,20 @@
 
 .chatbot-header .chatbot-close-button:hover {
     opacity: var(--chatbot-close-button-hover-opacity); /* Usa variabile */
+}
+
+/* Keyframes per l'animazione pulsante */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15); /* Leggermente più grande */
+        opacity: 0.7;        /* Leggermente più trasparente */
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 } 
