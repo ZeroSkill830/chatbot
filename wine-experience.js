@@ -33,8 +33,8 @@ const WineExperience = class {
                 }
             });
 
-            const winesElement = this.formatWinesForDisplay({wines: wines.wines});
-            
+            const winesElement = this.formatWinesForDisplay({ wines: wines.wines });
+
             // Accedi all'area messaggi attraverso lo Shadow DOM
             const chatbotHost = document.querySelector('#chatbot-host');
             if (chatbotHost && chatbotHost.shadowRoot) {
@@ -56,11 +56,17 @@ const WineExperience = class {
         }
     }
 
-    async startWineTasting(wineName) {
+    async startWineTasting(wineName, stageName = null) {
         try {
             const stages = this.wineStages.get(wineName);
             if (!stages || !stages.length) {
                 throw new Error(`Nessuno stage disponibile per il vino ${wineName}`);
+            }
+
+            // Determina lo stage da usare: quello fornito o il primo
+            const targetStage = stageName && stages.includes(stageName) ? stageName : stages[0];
+            if (!targetStage) {
+                throw new Error(`Stage non valido o non trovato per ${wineName}`);
             }
 
             const response = await fetch(this.tastingEndpoint, {
@@ -74,8 +80,8 @@ const WineExperience = class {
                     mode: 'beginner',
                     wineName: wineName,
                     userId: 'user',
-                    stage: stages[0],
-                    language: window.chatbotLanguage || 'it' // Usa la lingua globale o default a IT
+                    stage: targetStage, // Usa lo stage target
+                    language: window.chatbotLanguage || 'it'
                 })
             });
 
@@ -87,7 +93,7 @@ const WineExperience = class {
 
             // Mostra la modale con le informazioni dello stage
             this.showStageModal(result);
-            
+
         } catch (error) {
             console.error('Errore durante l\'avvio della degustazione:', error);
             throw error;
@@ -99,35 +105,35 @@ const WineExperience = class {
         // Crea gli elementi della modale
         const modalOverlay = document.createElement('div');
         modalOverlay.className = 'wine-modal-overlay';
-        
+
         const modalElement = document.createElement('div');
         modalElement.className = 'wine-modal';
-        
-        // Aggiungi il titolo dello stage
-        const modalTitle = document.createElement('h2');
-        modalTitle.className = 'wine-modal-title';
-        modalTitle.textContent = `Stage: ${stageData.currentStage.charAt(0).toUpperCase() + stageData.currentStage.slice(1)}`;
-        modalElement.appendChild(modalTitle);
-        
+
         // Aggiungi l'immagine dello stage
         const stageImageContainer = document.createElement('div');
         stageImageContainer.className = 'stage-image-container';
-        
+
+        // Aggiungi il titolo dello stage
+        const modalTitle = document.createElement('h2');
+        modalTitle.className = 'wine-modal-title';
+        modalTitle.textContent = `${stageData.currentStage.charAt(0).toUpperCase() + stageData.currentStage.slice(1)}`;
+        modalElement.appendChild(modalTitle);
+
         const stageImage = document.createElement('img');
         stageImage.className = 'stage-image';
         // Seleziona l'immagine in base allo stage corrente
         stageImage.src = `./imgs/${stageData.currentStage}.png`;
         stageImage.alt = `${stageData.currentStage} stage`;
-        
+
         stageImageContainer.appendChild(stageImage);
         modalElement.appendChild(stageImageContainer);
-        
+
         // Aggiungi il testo di anteprima
         const modalText = document.createElement('p');
         modalText.className = 'wine-modal-text';
         modalText.textContent = stageData.previewText;
         modalElement.appendChild(modalText);
-        
+
         // Aggiungi il bottone "Avanti"
         const modalButton = document.createElement('button');
         modalButton.className = 'wine-modal-button';
@@ -141,15 +147,15 @@ const WineExperience = class {
                     modalInShadow.remove();
                 }
             }
-            
+
             // Mostra la modal con i chunks invece di reindirizzare a una nuova pagina
             this.showChunksModal(stageData);
         });
         modalElement.appendChild(modalButton);
-        
+
         // Aggiungi la modale al DOM attraverso lo Shadow Root
         modalOverlay.appendChild(modalElement);
-        
+
         // Inserisci la modale nello shadow root invece che nel body
         const chatbotHost = document.querySelector('#chatbot-host');
         if (chatbotHost && chatbotHost.shadowRoot) {
@@ -160,30 +166,30 @@ const WineExperience = class {
             document.body.appendChild(modalOverlay);
         }
     }
-    
+
     // Crea un indicatore di digitazione
     createTypingIndicator(container) {
         const indicatorElement = document.createElement('div');
         indicatorElement.className = 'chatbot-message-typing-indicator typing-indicator';
-        
+
         // Crea i tre puntini animati
         for (let i = 0; i < 3; i++) {
             const dot = document.createElement('span');
             dot.className = 'chatbot-typing-dot';
             indicatorElement.appendChild(dot);
         }
-        
+
         container.appendChild(indicatorElement);
-        
+
         // Scorri in basso per mostrare l'indicatore
         const modalBody = container.closest('.wine-tasting-modal-body');
         if (modalBody) {
             modalBody.scrollTop = modalBody.scrollHeight;
         }
-        
+
         return indicatorElement;
     }
-    
+
     // Rimuove l'indicatore di digitazione
     removeTypingIndicator(indicator) {
         if (indicator && indicator.parentNode) {
@@ -192,7 +198,7 @@ const WineExperience = class {
         }
         return indicator;
     }
-    
+
     // Mostra una modale con i chunks che appaiono uno dopo l'altro ogni 5 secondi
     showChunksModal(stageData) {
         // Reset delle variabili
@@ -200,41 +206,41 @@ const WineExperience = class {
         // Cancella eventuali timeout esistenti
         this.chunkTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
         this.chunkTimeouts = [];
-        
+
         // Ordina i chunks in base a chunkIndex
         const sortedChunks = [...stageData.chunks].sort((a, b) => a.chunkIndex - b.chunkIndex);
-        
+
         // Crea gli elementi della modale
         const modalOverlay = document.createElement('div');
         modalOverlay.className = 'wine-tasting-modal-overlay';
-        
+
         const modalContent = document.createElement('div');
         modalContent.className = 'wine-tasting-modal wine-chunks-modal';
-        
+
         // Crea l'header della modale
         const modalHeader = document.createElement('div');
         modalHeader.className = 'wine-tasting-modal-header';
-        
+
         const modalTitle = document.createElement('div');
         modalTitle.className = 'modal-title-container';
-        
+
         const title = document.createElement('h2');
         title.textContent = `${stageData.wineName}`;
-        
+
         const stageIndicator = document.createElement('span');
         stageIndicator.className = 'stage-indicator';
         stageIndicator.textContent = stageData.currentStage;
-        
+
         modalTitle.appendChild(title);
         modalTitle.appendChild(stageIndicator);
-        
+
         const closeButton = document.createElement('button');
         closeButton.className = 'close-button';
         closeButton.innerHTML = '&times;';
         closeButton.addEventListener('click', () => {
             // Cancella tutti i timeout quando si chiude la modale
             this.chunkTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
-            
+
             // Rimuovi la modale
             const chatbotHost = document.querySelector('#chatbot-host');
             if (chatbotHost && chatbotHost.shadowRoot) {
@@ -244,35 +250,30 @@ const WineExperience = class {
                 }
             }
         });
-        
+
         modalHeader.appendChild(modalTitle);
         modalHeader.appendChild(closeButton);
-        
+
         // Crea il corpo della modale
         const modalBody = document.createElement('div');
         modalBody.className = 'wine-tasting-modal-body';
-        
+
         const chunkContainer = document.createElement('div');
         chunkContainer.className = 'chunks-container';
-        
+
         modalBody.appendChild(chunkContainer);
-        
+
         // Crea il footer della modale
         const modalFooter = document.createElement('div');
         modalFooter.className = 'wine-tasting-modal-footer';
-        
-        const progress = document.createElement('div');
-        progress.className = 'stage-progress';
-        progress.textContent = `Stage ${stageData.currentStage} - 1/${sortedChunks.length} passaggi`;
-        
-        const closeModalButton = document.createElement('button');
-        closeModalButton.className = 'close-modal-button';
-        closeModalButton.textContent = 'Chiudi';
-        closeModalButton.addEventListener('click', () => {
-            // Cancella tutti i timeout quando si chiude la modale
+
+        const progressElement = document.createElement('div');
+        progressElement.className = 'stage-progress';
+        progressElement.textContent = `Stage ${stageData.currentStage} - 0/${sortedChunks.length} passaggi`;
+
+        // Funzione per chiudere la modale
+        const closeModalLogic = () => {
             this.chunkTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
-            
-            // Rimuovi la modale
             const chatbotHost = document.querySelector('#chatbot-host');
             if (chatbotHost && chatbotHost.shadowRoot) {
                 const modalElement = chatbotHost.shadowRoot.querySelector('.wine-tasting-modal-overlay');
@@ -280,101 +281,265 @@ const WineExperience = class {
                     modalElement.remove();
                 }
             }
-        });
-        
-        modalFooter.appendChild(progress);
-        modalFooter.appendChild(closeModalButton);
-        
+        };
+
+        // Crea un contenitore SOLO per il progress inizialmente
+        const footerContentWrapper = document.createElement('div');
+        footerContentWrapper.className = 'footer-content-wrapper';
+        footerContentWrapper.appendChild(progressElement);
+
+        modalFooter.appendChild(footerContentWrapper);
+
         // Assembla la modale
         modalContent.appendChild(modalHeader);
         modalContent.appendChild(modalBody);
         modalContent.appendChild(modalFooter);
         modalOverlay.appendChild(modalContent);
-        
+
         // Inserisci la modale nello shadow root
         const chatbotHost = document.querySelector('#chatbot-host');
         if (chatbotHost && chatbotHost.shadowRoot) {
             chatbotHost.shadowRoot.appendChild(modalOverlay);
         } else {
             console.error('Host del chatbot o Shadow Root non trovati per aggiungere la modale chunks');
-            // Fallback al body se lo shadow root non è disponibile
             document.body.appendChild(modalOverlay);
         }
-        
-        // Funzione ricorsiva per aggiungere i chunks uno alla volta con il typing indicator
+
+        // Funzione ricorsiva per aggiungere i chunks
         const addChunkWithDelay = (index) => {
-            if (index >= sortedChunks.length) return;
-            
-            // Se è il primo chunk, aggiungerlo immediatamente
-            if (index === 0) {
-                this.addChunkToContainer(sortedChunks[index], chunkContainer, true);
-                
-                // Mostra il typing indicator dopo il primo chunk
-                this.typingIndicator = this.createTypingIndicator(chunkContainer);
-                
-                // Programma l'aggiunta del prossimo chunk dopo 3 secondi di "typing"
-                const timeoutId = setTimeout(() => {
+            // Aggiorna il testo del progresso qui, quando il chunk viene aggiunto
+            progressElement.textContent = `Stage ${stageData.currentStage} - ${index + 1}/${sortedChunks.length} passaggi`;
+
+            if (index >= sortedChunks.length) {
+                // Tutti i chunk mostrati, abilita il bottone se non è l'ultimo stage
+                // o lascialo come 'Fine Degustazione'
+                // Potresti voler mostrare/abilitare il bottone qui se era nascosto/disabilitato
+                return;
+            }
+
+            // Aggiungi il chunk con animazione
+            this.addChunkToContainer(sortedChunks[index], chunkContainer, false);
+
+            // Scorri automaticamente verso il nuovo chunk
+            modalBody.scrollTop = modalBody.scrollHeight;
+
+            // Se non è l'ultimo chunk, mostra di nuovo l'indicatore di typing
+            if (index < sortedChunks.length - 1) {
+                // Mostra l'indicatore di digitazione dopo un breve ritardo
+                const typingTimeoutId = setTimeout(() => {
+                    this.typingIndicator = this.createTypingIndicator(chunkContainer);
+                }, 2000); // 2 secondi per leggere il messaggio corrente
+                this.chunkTimeouts.push(typingTimeoutId);
+
+                // Programma l'aggiunta del prossimo chunk dopo l'effetto di typing
+                const nextChunkTimeoutId = setTimeout(() => {
                     // Rimuovi l'indicatore di digitazione
                     this.typingIndicator = this.removeTypingIndicator(this.typingIndicator);
-                    
-                    // Procedi al chunk successivo dopo aver mostrato l'indicatore
+
+                    // Procedi al chunk successivo
                     addChunkWithDelay(index + 1);
-                }, 3000); // 3 secondi di typing, poi 2 secondi per leggere = 5 secondi totali
-                this.chunkTimeouts.push(timeoutId);
+                }, 5000); // 2s leggere + 3s typing = 5s totali
+                this.chunkTimeouts.push(nextChunkTimeoutId);
             } else {
-                // Aggiorna l'indicatore di progresso
-                progress.textContent = `Stage ${stageData.currentStage} - ${index + 1}/${sortedChunks.length} passaggi`;
-                
-                // Aggiungi il chunk con animazione
-                this.addChunkToContainer(sortedChunks[index], chunkContainer, false);
-                
-                // Scorri automaticamente verso il nuovo chunk
-                modalBody.scrollTop = modalBody.scrollHeight;
-                
-                // Se non è l'ultimo chunk, mostra di nuovo l'indicatore di typing
-                if (index < sortedChunks.length - 1) {
-                    // Mostra l'indicatore di digitazione dopo un breve ritardo
-                    const typingTimeoutId = setTimeout(() => {
-                        this.typingIndicator = this.createTypingIndicator(chunkContainer);
-                    }, 2000); // 2 secondi per leggere il messaggio corrente
-                    this.chunkTimeouts.push(typingTimeoutId);
+                // Siamo all'ultimo chunk, rimuovi l'indicatore se presente
+                this.typingIndicator = this.removeTypingIndicator(this.typingIndicator);
+
+                // --- Logica di fine stage --- 
+                const showStageEndControls = () => {
+                    // 1. Rimuovi l'indicatore di progresso
+                    const progressElement = modalFooter.querySelector('.stage-progress');
+                    if (progressElement && progressElement.parentNode) {
+                        progressElement.parentNode.removeChild(progressElement);
+                    }
+
+                    // 2. Determina se è l'ultimo stage
+                    const stages = this.wineStages.get(stageData.wineName) || [];
+                    const currentStageIndex = stages.indexOf(stageData.currentStage);
+                    const isLastStage = currentStageIndex === -1 || currentStageIndex === stages.length - 1;
+                    const nextStageName = !isLastStage ? stages[currentStageIndex + 1] : null;
+
+                    // 3. Crea il bottone "Prossimo Stage" / "Fine Degustazione"
+                    const actionButton = document.createElement('button');
+                    actionButton.className = isLastStage ? 'close-modal-button' : 'next-stage-button';
+                    actionButton.textContent = isLastStage ? 'Fine Degustazione' : 'Prossimo Stage';
+
+                    // Aggiungi la logica di click (usa closeModalLogic definita in showChunksModal)
+                    actionButton.addEventListener('click', async () => {
+                         // Usa la closeModalLogic definita nello scope padre showChunksModal
+                         // Cerca la funzione closeModalLogic definita sopra
+                         const closeModalFunc = () => { // Ridefiniamo o troviamo la funzione
+                            this.chunkTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+                            const host = document.querySelector('#chatbot-host');
+                            if (host && host.shadowRoot) {
+                                const modal = host.shadowRoot.querySelector('.wine-tasting-modal-overlay');
+                                if (modal) modal.remove();
+                            }
+                         };
+                         closeModalFunc(); // Chiudi la modale corrente
+
+                        if (!isLastStage && nextStageName) {
+                            try {
+                                await this.startWineTasting(stageData.wineName, nextStageName);
+                            } catch (error) {
+                                console.error("Errore nel caricare il prossimo stage:", error);
+                            }
+                        } else {
+                            console.log('Degustazione completata per', stageData.wineName);
+                        }
+                    });
                     
-                    // Programma l'aggiunta del prossimo chunk dopo l'effetto di typing
-                    const nextChunkTimeoutId = setTimeout(() => {
-                        // Rimuovi l'indicatore di digitazione
-                        this.typingIndicator = this.removeTypingIndicator(this.typingIndicator);
-                        
-                        // Procedi al chunk successivo
-                        addChunkWithDelay(index + 1);
-                    }, 5000); // 2s leggere + 3s typing = 5s totali
-                    this.chunkTimeouts.push(nextChunkTimeoutId);
-                }
+                    // 4. Aggiungi il bottone al footer (prima dell'input)
+                    const footerWrapper = modalFooter.querySelector('.footer-content-wrapper');
+                    if (footerWrapper) {
+                         footerWrapper.appendChild(actionButton); 
+                    } else {
+                         modalFooter.appendChild(actionButton); // Fallback
+                    }
+
+                    // 5. Aggiungi l'input per la chat
+                    this.addChatInput(modalFooter, modalBody, stageData);
+                };
+
+                // Esegui la logica di fine stage dopo un breve ritardo
+                const finalControlsTimeoutId = setTimeout(showStageEndControls, 500); // Breve ritardo
+                this.chunkTimeouts.push(finalControlsTimeoutId);
             }
         };
-        
+
         // Inizia ad aggiungere i chunks
         addChunkWithDelay(0);
     }
-    
+
     // Aggiunge un singolo chunk al container
     addChunkToContainer(chunk, container, isFirst) {
         const chunkElement = document.createElement('div');
         chunkElement.className = 'chunk-item';
-        
+
         if (isFirst) {
             chunkElement.classList.add('first-chunk');
         } else {
             // Aggiungi una classe per l'animazione in entrata
             chunkElement.classList.add('new-chunk');
         }
-        
+
         // Crea l'elemento per il testo del chunk
         const chunkText = document.createElement('div');
         chunkText.className = 'chunk-text';
         chunkText.textContent = chunk.text;
         chunkElement.appendChild(chunkText);
-        
+
         container.appendChild(chunkElement);
+    }
+
+    // Aggiunge l'input per la chat alla fine della modale
+    addChatInput(modalFooter, modalBody, stageData) {
+        const chatInputContainer = document.createElement('div');
+        chatInputContainer.className = 'chat-input-container';
+
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.placeholder = 'Descrivi le tue sensazioni...';
+        textInput.className = 'chat-input';
+
+        const sendButton = document.createElement('button');
+        sendButton.textContent = 'Invia';
+        sendButton.className = 'chat-send-button';
+
+        const sendMessage = async () => {
+            const messageText = textInput.value.trim();
+            if (!messageText) return;
+
+            const chunkContainer = modalBody.querySelector('.chunks-container');
+            if (!chunkContainer) {
+                console.error('Chunk container non trovato!');
+                return;
+            }
+
+            // Mostra messaggio utente
+            const userMessageElement = document.createElement('div');
+            userMessageElement.className = 'chatbot-message chatbot-message-user';
+            userMessageElement.textContent = messageText;
+            chunkContainer.appendChild(userMessageElement);
+            modalBody.scrollTop = modalBody.scrollHeight;
+            textInput.value = '';
+            textInput.disabled = true;
+            sendButton.disabled = true;
+
+            // Mostra indicatore typing
+            let typingIndicator = this.createTypingIndicator(chunkContainer);
+            modalBody.scrollTop = modalBody.scrollHeight;
+
+            const feedbackPayload = {
+                sessionId: 'user', // Placeholder
+                wineName: stageData.wineName,
+                stage: stageData.currentStage,
+                feedbackType: "stage",
+                feedbackText: messageText
+            };
+
+            try {
+                const response = await fetch(`${this.tastingEndpoint}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Authorization': `Bearer ${window.chatbotAuthToken}`
+                    },
+                    body: JSON.stringify(feedbackPayload)
+                });
+
+                typingIndicator = this.removeTypingIndicator(typingIndicator);
+
+                if (!response.ok) {
+                    const errorBody = await response.text();
+                    console.error('API Error:', response.status, response.statusText, errorBody);
+                    throw new Error(`Errore ${response.status}: ${response.statusText || 'Errore API'}`);
+                }
+
+                const result = await response.json();
+
+                // Mostra risposta bot
+                const botMessageElement = document.createElement('div');
+                botMessageElement.className = 'chatbot-message chatbot-message-bot';
+                console.log(result, 'gnegne');    
+                if (result.responseToFeedback) {
+                    botMessageElement.textContent = result.responseToFeedback;
+                } else {
+                    console.warn('API response missing responseToFeedBack', result);
+                    botMessageElement.textContent = "Grazie per il tuo feedback!"; // Fallback
+                }
+                chunkContainer.appendChild(botMessageElement);
+
+            } catch (error) {
+                console.error('Errore invio feedback:', error);
+                if(typingIndicator) { // Rimuovi indicatore se ancora presente
+                    typingIndicator = this.removeTypingIndicator(typingIndicator);
+                }
+                // Mostra messaggio errore
+                const errorMessageElement = document.createElement('div');
+                errorMessageElement.className = 'chatbot-message chatbot-message-bot';
+                errorMessageElement.textContent = `Spiacente, errore: ${error.message}`;
+                errorMessageElement.style.color = 'red';
+                chunkContainer.appendChild(errorMessageElement);
+            } finally {
+                // Riabilita input
+                textInput.disabled = false;
+                sendButton.disabled = false;
+                modalBody.scrollTop = modalBody.scrollHeight;
+                textInput.focus();
+            }
+        };
+
+        sendButton.addEventListener('click', sendMessage);
+        textInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        chatInputContainer.appendChild(textInput);
+        chatInputContainer.appendChild(sendButton);
+        modalFooter.appendChild(chatInputContainer);
     }
 
     formatWinesForDisplay(wines) {
@@ -414,7 +579,7 @@ const WineExperience = class {
                 const loader = document.createElement('div');
                 loader.className = 'wine-card-loader'; // Applicheremo stile CSS
                 // Potresti aggiungere un'icona o animazione qui invece del testo
-                loader.innerHTML = '<div class="spinner"></div>'; 
+                loader.innerHTML = '<div class="spinner"></div>';
                 wineCard.appendChild(loader);
 
                 try {

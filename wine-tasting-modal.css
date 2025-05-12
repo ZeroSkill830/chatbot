@@ -1,21 +1,22 @@
-.wine-modal-overlay {
+.wine-modal-overlay,
+.wine-tasting-modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    bottom: 120px;
+    right: 20px;
+    width: 390px;
+    height: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999999;
+    border-radius: var(--chatbot-border-radius-container);
+    font-family: var(--chatbot-font);
 }
 
 .wine-modal {
     background-color: #fff;
     border-radius: 8px;
-    max-width: 90%;
-    width: 500px;
+    height: 100%;
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
@@ -28,18 +29,21 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #8B0000; /* Colore bordeaux per il tema vino */
-    text-transform: uppercase;
+    color: #8B0000;
+    /* Colore bordeaux per il tema vino */
+    text-align: center;
 }
 
 .wine-modal-text {
-    font-size: 18px;
+    font-size: 14px;
     line-height: 1.6;
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .wine-modal-button {
-    background-color: #8B0000; /* Colore bordeaux per il tema vino */
+    background-color: #8B0000;
+    /* Colore bordeaux per il tema vino */
     color: white;
     border: none;
     padding: 12px 24px;
@@ -55,36 +59,19 @@
     background-color: #6B0000;
 }
 
-/* Stili per la modale di visualizzazione dei chunks */
-.wine-tasting-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999999;
-}
+
 
 .wine-tasting-modal {
     background-color: #fff;
     border-radius: 12px;
-    max-width: 92%;
-    width: 550px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
     position: relative;
-    max-height: 85vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    width: 100%;
 }
 
-.wine-chunks-modal {
-    height: 600px;
-}
 
 .wine-tasting-modal-header {
     background-color: #8B0000;
@@ -105,6 +92,7 @@
     margin: 0 0 6px 0;
     font-size: 20px;
     font-weight: 600;
+    text-align: center;
 }
 
 .stage-indicator {
@@ -151,13 +139,11 @@
     margin-bottom: 20px;
     overflow: hidden;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Stile per l'immagine dello stage */
 .stage-image {
     width: 100%;
-    max-height: 200px;
     object-fit: cover;
     display: block;
     transition: transform 0.3s ease;
@@ -169,6 +155,7 @@
         opacity: 0;
         transform: scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -227,6 +214,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -259,8 +247,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .chatbot-typing-dot {
@@ -285,9 +278,11 @@
     0% {
         opacity: 0.4;
     }
+
     20% {
         opacity: 1;
     }
+
     100% {
         opacity: 0.4;
     }
@@ -330,39 +325,87 @@
     transform: translateY(0);
 }
 
+.wine-tasting-modal-footer {
+    flex-direction: column;
+
+    .chat-input-container {
+        display: flex;
+        width: 100%;
+
+        input {
+            flex-grow: 1;
+            border: 1px solid var(--chatbot-border-color);
+            outline: none;
+            padding: 8px 12px;
+            border-radius: var(--chatbot-border-radius-input);
+            background-color: var(--chatbot-bg);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            color: var(--chatbot-text-secondary);
+        }
+
+        .chat-send-button {
+            background: none;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            color: var(--chatbot-accent-color);
+            font-size: 1.3rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease, transform 0.1s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 8px 10px;
+        }
+    }
+
+    .stage-progress {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+
+}
+
 /* Responsive per schermi piccoli */
 @media (max-width: 600px) {
     .wine-tasting-modal {
         width: 95%;
         height: 80vh;
     }
-    
+
     .wine-tasting-modal-header {
         padding: 12px 16px;
     }
-    
+
     .modal-title-container h2 {
         font-size: 18px;
     }
-    
+
     .wine-tasting-modal-body {
         padding: 16px;
     }
-    
+
     .chunk-text {
         font-size: 0.9rem;
     }
-    
+
     .wine-tasting-modal-footer {
         padding: 12px 16px;
     }
-    
+
     .close-modal-button {
         padding: 10px 20px;
         font-size: 14px;
     }
-    
+
     .stage-image {
         max-height: 150px;
     }
-} 
+}
