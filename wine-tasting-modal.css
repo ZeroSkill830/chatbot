@@ -1,218 +1,412 @@
-.wine-tasting-modal {
-    font-family: var(--chatbot-font);
+.wine-modal-overlay,
+.wine-tasting-modal-overlay {
     position: fixed;
     bottom: 120px;
     right: 20px;
     width: 390px;
     height: 600px;
-    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999;
+    z-index: 9999999;
+    border-radius: var(--chatbot-border-radius-container);
+    font-family: var(--chatbot-font);
+    overflow: hidden;
 }
 
-.wine-tasting-modal-content {
-    width: 100%;
+.wine-modal {
+    background-color: #fff;
+    border-radius: var(--chatbot-border-radius-container);
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow-y: auto;
+    color: #333;
+    height: 100%;
+}
+
+.wine-modal-title {
+    font-size: 40px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: #8B0000;
+    /* Colore bordeaux per il tema vino */
+    text-align: center;
+}
+
+.wine-modal-text {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.wine-modal-button {
+    background-color: var(--chatbot-header-bg);
+    /* Colore bordeaux per il tema vino */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 50px;
+}
+
+.wine-modal-button:hover {
+    background-color: #6B0000;
+}
+
+
+
+.wine-tasting-modal {
+    background-color: #fff;
+    border-radius: 12px;
+    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;
-    position: relative;
     overflow: hidden;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
 }
+
 
 .wine-tasting-modal-header {
     padding: 15px 20px;
-    border-bottom: 1px solid var(--chatbot-border-color, #e0e0e0);
+    background: var(--chatbot-header-bg); /* Applicato nuovo gradiente */
+    border-bottom: 1px solid var(--chatbot-border-color); /* Usa variabile */
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Titolo a sinistra, bottone a destra */
     align-items: center;
-    background: var(--chatbot-header-bg, #f8f9fa);
-    flex-shrink: 0;
+    flex-shrink: 0; /* Impedisce all'header di restringersi */
+    position: relative; /* Necessario per il posizionamento assoluto del ::after */
+    min-height: 45.5px;
 }
 
-.wine-tasting-modal-header h2 {
-    margin: 0;
-    color: var(--chatbot-header-text, #333);
-    font-size: 1.1rem;
-    font-weight: 500;
-    line-height: 1.2;
+.modal-title-container {
+    display: flex;
+    flex-direction: column;
 }
 
-.stage-indicator {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    color: var(--chatbot-header-text, #333);
-    font-weight: 400;
-    text-transform: capitalize;
+.modal-title-container h2 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+    font-weight: 300;
+    text-align: center;
+    color: white;
 }
 
 .close-button {
     background: none;
     border: none;
-    font-size: 1.4rem;
+    font-size: 24px;
     cursor: pointer;
-    color: var(--chatbot-close-button-color, #666);
-    padding: 0 4px;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    color: white;
+    padding: 0;
+    opacity: 0.8;
+    transition: all 0.2s;
 }
 
 .close-button:hover {
-    opacity: var(--chatbot-close-button-hover-opacity, 1);
-    background-color: transparent;
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .wine-tasting-modal-body {
-    padding: 20px;
+    padding: 24px;
     flex-grow: 1;
     overflow-y: auto;
-    background-color: var(--chatbot-bg, #fff);
+    background-color: var(--chatbot-bg, #f9f9f9);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    scroll-behavior: smooth;
 }
 
-.chunk-content {
-    margin-bottom: 32px;
-    line-height: 1.6;
-    color: #333;
-    font-size: 1.1rem;
+/* Stile per il contenitore dell'immagine dello stage */
+.stage-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+/* Stile per l'immagine dello stage */
+.stage-image {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+    animation: zoomIn 0.5s ease forwards;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.stage-image-container:hover .stage-image {
+    transform: scale(1.03);
+}
+
+/* Nuovo stile per il contenitore di tutti i chunks */
+.chunks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 0;
+}
+
+/* Stile per singolo chunk come messaggio del chatbot */
+.chunk-item {
+    padding: 10px 14px;
+    border-radius: var(--chatbot-border-radius-message, 12px);
+    border-bottom-left-radius: 4px;
+    background-color: var(--chatbot-message-bot-bg, #f0f0f0);
+    color: var(--chatbot-message-bot-text, #333);
+    max-width: 80%;
+    align-self: flex-start;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.chunk-item:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.first-chunk {
+    position: relative;
+}
+
+.first-chunk::before {
+    content: "Sommelier";
+    display: block;
+    font-size: 0.75rem;
+    color: var(--chatbot-accent-color, #8B0000);
+    font-weight: 500;
+    margin-bottom: 4px;
+    opacity: 0.8;
+}
+
+/* Stile per i nuovi chunk con animazione */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.new-chunk {
+    animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .chunk-text {
-    margin-bottom: 24px;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    font-size: 0.9rem;
+    margin: 0;
+    color: inherit;
 }
 
-.feedback-prompt {
-    font-style: italic;
-    color: #666;
-    border-left: 4px solid var(--chatbot-accent-color);
-    padding-left: 16px;
-    margin-top: 16px;
-    font-size: 0.85rem;
-    background-color: #f8f9fa;
-    padding: 16px 20px;
-    border-radius: 8px;
-    font-weight: 600;
+/* Stili per l'indicatore di digitazione (typing) */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 18px 14px;
+    background-color: var(--chatbot-message-bot-bg, #f0f0f0); /* Usa lo stesso sfondo del bot o fallback */
+    color: var(--chatbot-message-bot-text, #333); /* Usa lo stesso colore testo del bot o fallback */
+    border-radius: var(--chatbot-border-radius-message);
+    align-self: flex-start; /* Allinea come i messaggi del bot */
+    border-bottom-left-radius: 4px;
+    margin-bottom: 10px; /* Aggiungi margine se necessario tra i messaggi */
+    max-width: fit-content; /* Adatta la larghezza al contenuto */
 }
 
-.feedback-input-container {
-    margin-top: 24px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
-.feedback-input {
-    width: 100%;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    resize: vertical;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
+.chatbot-typing-dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 2px;
+    background-color: var(--chatbot-message-bot-text, #333);
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: typing-blink 1.4s infinite both;
 }
 
-.feedback-input:focus {
-    outline: none;
-    border-color: var(--chatbot-accent-color);
+.chatbot-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.chatbot-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-blink {
+    0% {
+        opacity: 0.4;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
 }
 
 .wine-tasting-modal-footer {
-    padding: 15px 20px;
-    border-top: 1px solid var(--chatbot-border-color, #e0e0e0);
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--chatbot-footer-bg, #f8f9fa);
+    background-color: #f8f8f8;
 }
 
-.next-chunk-button {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 24px;
-    background-color: var(--chatbot-accent-color);
-    color: white;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-.next-chunk-button:hover {
-    background-color: var(--chatbot-red-wine-card-bg-hover);
-}
-
-.next-chunk-button:active {
-    transform: scale(0.98);
-}
-
-.next-chunk-button:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-}
-
-.chunk-progress {
+.stage-progress {
+    font-size: 16px;
     color: #666;
-    font-size: 1rem;
     font-weight: 500;
 }
 
-.loader-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    border-radius: 16px;
+.close-modal-button {
+    background-color: #8B0000;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
-.loader {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--chatbot-accent-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.close-modal-button:hover {
+    background-color: #6B0000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.close-modal-button:active {
+    transform: translateY(0);
 }
 
-/* Animazioni per la transizione dei chunks */
-.chunk-text.slide-out-left,
-.feedback-prompt.slide-out-left {
-    opacity: 0;
-    transform: translateX(-20px);
-}
+.wine-tasting-modal-footer {
+    flex-direction: column;
 
-.chunk-text.slide-in-right,
-.feedback-prompt.slide-in-right {
-    opacity: 1;
-    transform: translateX(0);
-} 
+    .chat-input-container {
+        display: flex;
+        width: 100%;
 
+        input {
+            flex-grow: 1;
+            border: 1px solid var(--chatbot-border-color);
+            outline: none;
+            padding: 8px 12px;
+            border-radius: var(--chatbot-border-radius-input);
+            background-color: var(--chatbot-bg);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            color: var(--chatbot-text-secondary);
+        }
 
-/* Stili per il modale di degustazione su mobile */
-@media (max-width: 768px) {
-    .wine-tasting-modal {
-        width: 100%!important;
-        height: 90%!important;
-        bottom: 0!important;
-        right: 0!important;
-        left: 0!important;
+        .chat-send-button {
+            background: none;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            color: var(--chatbot-accent-color);
+            font-size: 1.3rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease, transform 0.1s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 8px 10px;
+        }
     }
-} 
+
+    .stage-progress {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+
+}
+
+/* Responsive per schermi piccoli */
+@media (max-width: 768px) {
+    .wine-modal-overlay, 
+    .wine-tasting-modal-overlay,
+    .wine-modal-overlay {
+        width: 100%;
+        height: 90%;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 99999;
+    }
+
+    .wine-tasting-modal-header {
+        padding: 12px 16px;
+    }
+
+    .modal-title-container h2 {
+        font-size: 18px;
+    }
+
+    .wine-tasting-modal-body {
+        padding: 16px;
+    }
+
+    .chunk-text {
+        font-size: 0.9rem;
+    }
+
+    .wine-tasting-modal-footer {
+        padding: 12px 16px;
+    }
+
+    .close-modal-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .stage-image {
+        height: 300px;
+        width: 300px;
+    }
+}
