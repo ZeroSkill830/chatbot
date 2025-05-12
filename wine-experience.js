@@ -189,20 +189,20 @@ const WineExperience = class {
         const stageImageContainer = document.createElement('div');
         stageImageContainer.className = 'stage-image-container';
 
+        const stageImage = document.createElement('img');
+        stageImage.className = 'stage-image';
+        // Seleziona l'immagine in base allo stage corrente
+        stageImage.src = `${window.CHATBOT_BASE_URL}/imgs/${stageData.currentStage}.png`;
+        stageImage.alt = `${stageData.currentStage} stage`;
+
+        stageImageContainer.appendChild(stageImage);
+        modalElement.appendChild(stageImageContainer);
+
         // Aggiungi il titolo dello stage
         const modalTitle = document.createElement('h2');
         modalTitle.className = 'wine-modal-title';
         modalTitle.textContent = `${stageData.currentStage.charAt(0).toUpperCase() + stageData.currentStage.slice(1)}`;
         modalElement.appendChild(modalTitle);
-
-        const stageImage = document.createElement('img');
-        stageImage.className = 'stage-image';
-        // Seleziona l'immagine in base allo stage corrente
-        stageImage.src = `./imgs/${stageData.currentStage}.png`;
-        stageImage.alt = `${stageData.currentStage} stage`;
-
-        stageImageContainer.appendChild(stageImage);
-        modalElement.appendChild(stageImageContainer);
 
         // Aggiungi il testo di anteprima
         const modalText = document.createElement('p');
