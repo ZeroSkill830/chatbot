@@ -11,23 +11,23 @@
     z-index: 9999999;
     border-radius: var(--chatbot-border-radius-container);
     font-family: var(--chatbot-font);
+    overflow: hidden;
 }
 
 .wine-modal {
     background-color: #fff;
-    border-radius: 8px;
-    height: 100%;
+    border-radius: var(--chatbot-border-radius-container);
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
-    max-height: 80vh;
     overflow-y: auto;
     color: #333;
+    height: 100%;
 }
 
 .wine-modal-title {
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 40px;
+    font-weight: 400;
     margin-bottom: 20px;
     color: #8B0000;
     /* Colore bordeaux per il tema vino */
@@ -42,17 +42,21 @@
 }
 
 .wine-modal-button {
-    background-color: #8B0000;
+    background-color: var(--chatbot-header-bg);
     /* Colore bordeaux per il tema vino */
     color: white;
     border: none;
     padding: 12px 24px;
     font-size: 16px;
-    border-radius: 4px;
+    border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s;
     display: block;
     margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 50px;
 }
 
 .wine-modal-button:hover {
@@ -74,13 +78,15 @@
 
 
 .wine-tasting-modal-header {
-    background-color: #8B0000;
-    color: white;
-    padding: 16px 24px;
+    padding: 15px 20px;
+    background: var(--chatbot-header-bg); /* Applicato nuovo gradiente */
+    border-bottom: 1px solid var(--chatbot-border-color); /* Usa variabile */
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Titolo a sinistra, bottone a destra */
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0; /* Impedisce all'header di restringersi */
+    position: relative; /* Necessario per il posizionamento assoluto del ::after */
+    min-height: 45.5px;
 }
 
 .modal-title-container {
@@ -91,19 +97,9 @@
 .modal-title-container h2 {
     margin: 0 0 6px 0;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 300;
     text-align: center;
-}
-
-.stage-indicator {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
     color: white;
-    font-weight: 400;
-    text-transform: capitalize;
-    align-self: flex-start;
 }
 
 .close-button {
@@ -232,18 +228,16 @@
 
 /* Stili per l'indicatore di digitazione (typing) */
 .typing-indicator {
-    padding: 10px 14px;
-    max-width: 80px;
-    align-self: flex-start;
-    margin-bottom: 0;
-    margin-top: 0;
-    border-radius: var(--chatbot-border-radius-message, 12px);
-    border-bottom-left-radius: 4px;
-    background-color: var(--chatbot-message-bot-bg, #f0f0f0);
     display: flex;
     align-items: center;
-    opacity: 0;
-    animation: fadeIn 0.3s ease forwards;
+    padding: 18px 14px;
+    background-color: var(--chatbot-message-bot-bg, #f0f0f0); /* Usa lo stesso sfondo del bot o fallback */
+    color: var(--chatbot-message-bot-text, #333); /* Usa lo stesso colore testo del bot o fallback */
+    border-radius: var(--chatbot-border-radius-message);
+    align-self: flex-start; /* Allinea come i messaggi del bot */
+    border-bottom-left-radius: 4px;
+    margin-bottom: 10px; /* Aggiungi margine se necessario tra i messaggi */
+    max-width: fit-content; /* Adatta la larghezza al contenuto */
 }
 
 @keyframes fadeIn {
@@ -374,10 +368,16 @@
 }
 
 /* Responsive per schermi piccoli */
-@media (max-width: 600px) {
-    .wine-tasting-modal {
-        width: 95%;
-        height: 80vh;
+@media (max-width: 768px) {
+    .wine-modal-overlay, 
+    .wine-tasting-modal-overlay,
+    .wine-modal-overlay {
+        width: 100%;
+        height: 90%;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 99999;
     }
 
     .wine-tasting-modal-header {
@@ -406,6 +406,7 @@
     }
 
     .stage-image {
-        max-height: 150px;
+        height: 300px;
+        width: 300px;
     }
 }

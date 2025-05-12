@@ -10,6 +10,82 @@ const WineExperience = class {
         this.currentChunkIndex = 0; // Indice del chunk corrente
         this.chunkTimeouts = []; // Array per memorizzare i timeout dei chunks
         this.typingIndicator = null; // Riferimento all'indicatore di digitazione
+        
+        // Aggiungi listener per il bottone di toggle del chatbot
+        this.setupToggleButtonListener();
+    }
+    
+    // Metodo per configurare il listener del bottone toggle
+    setupToggleButtonListener() {
+        // Attendi che il DOM sia completamente caricato
+        document.addEventListener('DOMContentLoaded', () => {
+            this.attachToggleButtonListener();
+        });
+        
+        // Se il DOM è già caricato, attacca subito il listener
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            this.attachToggleButtonListener();
+        }
+    }
+    
+    // Attacca il listener al bottone di toggle
+    attachToggleButtonListener() {
+        const chatbotHost = document.querySelector('#chatbot-host');
+        if (chatbotHost && chatbotHost.shadowRoot) {
+            // Cerca il bottone toggle nel shadow DOM
+            const toggleButton = chatbotHost.shadowRoot.querySelector('.chatbot-toggle-button');
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    // Quando il bottone toggle viene cliccato, chiudi tutte le modali
+                    this.closeAllModals();
+                });
+                console.log('Listener aggiunto al bottone toggle del chatbot');
+            } else {
+                console.log('Bottone toggle non trovato nel shadow DOM');
+                // Se non lo troviamo al primo tentativo, proviamo a monitorare le modifiche al DOM
+                this.observeShadowRoot(chatbotHost.shadowRoot);
+            }
+        } else {
+            console.log('Shadow root non trovato, riprovo più tardi');
+            // Riprova dopo un breve ritardo
+            setTimeout(() => this.attachToggleButtonListener(), 1000);
+        }
+    }
+    
+    // Osserva il shadow root per individuare il bottone quando viene aggiunto
+    observeShadowRoot(shadowRoot) {
+        const observer = new MutationObserver((mutations) => {
+            const toggleButton = shadowRoot.querySelector('.chatbot-toggle-button');
+            if (toggleButton) {
+                toggleButton.addEventListener('click', () => {
+                    this.closeAllModals();
+                });
+                console.log('Listener aggiunto al bottone toggle (via observer)');
+                observer.disconnect(); // Smetti di osservare una volta trovato
+            }
+        });
+        
+        observer.observe(shadowRoot, { childList: true, subtree: true });
+    }
+    
+    // Chiudi tutte le modali
+    closeAllModals() {
+        const chatbotHost = document.querySelector('#chatbot-host');
+        if (chatbotHost && chatbotHost.shadowRoot) {
+            // Chiudi la modale di preview
+            const previewModal = chatbotHost.shadowRoot.querySelector('.wine-modal-overlay');
+            if (previewModal) {
+                previewModal.remove();
+            }
+            
+            // Chiudi la modale dei chunks
+            const chunksModal = chatbotHost.shadowRoot.querySelector('.wine-tasting-modal-overlay');
+            if (chunksModal) {
+                // Annulla tutti i timeout attivi
+                this.chunkTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+                chunksModal.remove();
+            }
+        }
     }
 
     async fetchWines() {
@@ -227,12 +303,8 @@ const WineExperience = class {
         const title = document.createElement('h2');
         title.textContent = `${stageData.wineName}`;
 
-        const stageIndicator = document.createElement('span');
-        stageIndicator.className = 'stage-indicator';
-        stageIndicator.textContent = stageData.currentStage;
 
         modalTitle.appendChild(title);
-        modalTitle.appendChild(stageIndicator);
 
         const closeButton = document.createElement('button');
         closeButton.className = 'close-button';
