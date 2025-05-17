@@ -29,8 +29,9 @@
         `${BASE_URL}/styles/chatbot-send-button.css`,
         `${BASE_URL}/styles/chatbot-toggle-button.css`,
         `${BASE_URL}/styles/chatbot-quick-actions.css`,
-        `${BASE_URL}/wine-experience.css`, // Aggiungo il CSS per l'esperienza dei vini
-        `${BASE_URL}/wine-tasting-modal.css`, // CSS per il modal di degustazione
+        `${BASE_URL}/styles/wine-experience.css`, // Aggiungo il CSS per l'esperienza dei vini
+        `${BASE_URL}/styles/wine-tasting-modal.css`, // CSS per il modal di degustazione
+        `${BASE_URL}/styles/mode-selection-modal.css`, // CSS per la modale di selezione livello
         // Aggiungere qui eventuali altri file CSS globali se necessario
     ];
 

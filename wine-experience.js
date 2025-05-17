@@ -10,6 +10,7 @@ const WineExperience = class {
         this.currentChunkIndex = 0; // Indice del chunk corrente
         this.chunkTimeouts = []; // Array per memorizzare i timeout dei chunks
         this.typingIndicator = null; // Riferimento all'indicatore di digitazione
+        this.currentTastingMode = null; // Modalità di degustazione corrente (beginner/expert)
         
         // Aggiungi listener per il bottone di toggle del chatbot
         this.setupToggleButtonListener();
@@ -132,8 +133,13 @@ const WineExperience = class {
         }
     }
 
-    async startWineTasting(wineName, stageName = null) {
+    async startWineTasting(wineName, mode = null, stageName = null) {
         try {
+            if (mode) {
+                this.currentTastingMode = mode;
+            }
+            const effectiveMode = mode || this.currentTastingMode || 'expert';
+
             const stages = this.wineStages.get(wineName);
             if (!stages || !stages.length) {
                 throw new Error(`Nessuno stage disponibile per il vino ${wineName}`);
@@ -153,10 +159,10 @@ const WineExperience = class {
                     'Authorization': `Bearer ${window.chatbotAuthToken}`
                 },
                 body: JSON.stringify({
-                    mode: 'beginner',
+                    mode: effectiveMode,
                     wineName: wineName,
                     userId: 'user',
-                    stage: targetStage, // Usa lo stage target
+                    stage: targetStage,
                     language: window.chatbotLanguage || 'it'
                 })
             });
@@ -451,7 +457,9 @@ const WineExperience = class {
 
                         if (!isLastStage && nextStageName) {
                             try {
-                                await this.startWineTasting(stageData.wineName, nextStageName);
+                                // Chiamata a startWineTasting per il prossimo stage SENZA passare 'mode'
+                                // in modo che usi this.currentTastingMode
+                                await this.startWineTasting(stageData.wineName, null, nextStageName);
                             } catch (error) {
                                 console.error("Errore nel caricare il prossimo stage:", error);
                             }
@@ -641,30 +649,36 @@ const WineExperience = class {
 
             // Aggiungi event listener per il click
             wineCard.addEventListener('click', async () => {
-                // Impedisci click multipli mentre carica
-                if (wineCard.classList.contains('loading')) {
+                // Impedisci click multipli se la modale di selezione è già attiva per questo vino
+                // o se un caricamento è già in corso.
+                // Potremmo voler aggiungere una classe specifica alla card quando la modale è aperta per essa.
+                if (wineCard.classList.contains('loading-selection') || document.querySelector('.mode-selection-modal-overlay')) {
+                    // Se la modale è già aperta o un'altra operazione è in corso, non fare nulla
+                    // o, in alternativa, potremmo chiudere la modale esistente se si clicca di nuovo sulla card.
+                    // Per ora, la lasciamo così per evitare comportamenti complessi.
                     return;
                 }
 
-                // Aggiungi classe e loader
-                wineCard.classList.add('loading');
-                const loader = document.createElement('div');
-                loader.className = 'wine-card-loader'; // Applicheremo stile CSS
-                // Potresti aggiungere un'icona o animazione qui invece del testo
-                loader.innerHTML = '<div class="spinner"></div>';
-                wineCard.appendChild(loader);
+                // Rimuoviamo la logica del loader diretto sulla card per ora,
+                // verrà gestito all'interno di startWineTasting o mostrato dopo la selezione.
+                // wineCard.classList.add('loading');
+                // const loader = document.createElement('div');
+                // loader.className = 'wine-card-loader';
+                // loader.innerHTML = '<div class="spinner"></div>';
+                // wineCard.appendChild(loader);
 
                 try {
-                    await this.startWineTasting(wine.name);
+                    // await this.startWineTasting(wine.name); // Vecchia chiamata
+                    this.showModeSelectionModal(wine.name); // Nuova chiamata
                 } catch (error) {
-                    console.error('Errore durante l\'avvio della degustazione:', error);
-                    // Potresti mostrare un messaggio di errore sulla card qui se vuoi
+                    console.error('Errore durante il tentativo di mostrare la selezione del livello:', error);
+                    // Potremmo mostrare un messaggio di errore sulla card qui se vuoi
                 } finally {
-                    // Rimuovi classe e loader indipendentemente dal risultato
-                    wineCard.classList.remove('loading');
-                    if (loader.parentNode === wineCard) { // Controllo sicurezza
-                        wineCard.removeChild(loader);
-                    }
+                    // Rimuoviamo la logica del loader diretto sulla card per ora
+                    // wineCard.classList.remove('loading');
+                    // if (loader.parentNode === wineCard) { // Controllo sicurezza
+                    //     wineCard.removeChild(loader);
+                    // }
                 }
             });
 
@@ -710,6 +724,105 @@ const WineExperience = class {
 
         return winesContainer;
     }
+
+    // Metodo per mostrare la modale di selezione del livello
+    async showModeSelectionModal(wineName) {
+        // TODO: Implementare la creazione e la visualizzazione della modale
+        console.log(`TODO: Mostra modale selezione livello per ${wineName}`);
+
+        // Chiudi eventuali altre modali di degustazione aperte prima di mostrare questa
+        this.closeAllModals(); // Assicuriamoci che questa funzione chiuda anche la wine-modal-overlay e wine-tasting-modal-overlay
+
+        const chatbotHost = document.querySelector('#chatbot-host');
+        if (!chatbotHost || !chatbotHost.shadowRoot) {
+            console.error('Host del chatbot o Shadow Root non trovati per aggiungere la modale di selezione modo.');
+            return;
+        }
+        const shadowRoot = chatbotHost.shadowRoot;
+
+        // --- Creazione Overlay --- 
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'mode-selection-modal-overlay'; // Usare per stili e per chiusura
+
+        // --- Creazione Contenuto Modale ---
+        const modalContent = document.createElement('div');
+        modalContent.className = 'mode-selection-modal'; // Classe per lo styling del box modale
+
+        // Titolo
+        const titleElement = document.createElement('h2');
+        titleElement.textContent = 'Seleziona il tuo livello';
+        modalContent.appendChild(titleElement);
+
+        // Contenitore per le card
+        const cardsContainer = document.createElement('div');
+        cardsContainer.className = 'mode-cards-container';
+
+        // Card "Principiante"
+        const beginnerCard = document.createElement('div');
+        beginnerCard.className = 'mode-card beginner-card';
+
+        const beginnerImage = document.createElement('img');
+        beginnerImage.src = `${window.CHATBOT_BASE_URL}/imgs/beginner.png`;
+        beginnerImage.alt = 'Livello Principiante';
+        beginnerImage.className = 'mode-card-image'; // Classe generica per lo styling comune
+        beginnerCard.appendChild(beginnerImage);
+
+        const beginnerText = document.createElement('span');
+        beginnerText.textContent = 'Principiante';
+        beginnerCard.appendChild(beginnerText);
+
+        beginnerCard.addEventListener('click', async () => {
+            this.closeModeSelectionModal(); 
+            await this.startWineTasting(wineName, 'beginner');
+        });
+        cardsContainer.appendChild(beginnerCard);
+
+        // Card "Esperto"
+        const expertCard = document.createElement('div');
+        expertCard.className = 'mode-card expert-card';
+
+        const expertImage = document.createElement('img');
+        expertImage.src = `${window.CHATBOT_BASE_URL}/imgs/expert.png`;
+        expertImage.alt = 'Livello Esperto';
+        expertImage.className = 'mode-card-image expert-card-image'; // Classe generica + classe specifica
+        expertCard.appendChild(expertImage);
+
+        const expertText = document.createElement('span');
+        expertText.textContent = 'Esperto';
+        expertCard.appendChild(expertText);
+
+        expertCard.addEventListener('click', async () => {
+            this.closeModeSelectionModal();
+            await this.startWineTasting(wineName, 'expert');
+        });
+        cardsContainer.appendChild(expertCard);
+
+        modalContent.appendChild(cardsContainer);
+
+        // Bottone Annulla/Chiudi (opzionale, ma buona UX)
+        const closeButton = document.createElement('button');
+        closeButton.className = 'mode-selection-close-button';
+        closeButton.textContent = 'Annulla';
+        closeButton.addEventListener('click', () => {
+            this.closeModeSelectionModal();
+        });
+        modalContent.appendChild(closeButton);
+
+        // --- Assemblaggio e Inserimento nel DOM --- 
+        modalOverlay.appendChild(modalContent);
+        shadowRoot.appendChild(modalOverlay); 
+    }
+
+    // Metodo per chiudere la modale di selezione del livello
+    closeModeSelectionModal() {
+        const chatbotHost = document.querySelector('#chatbot-host');
+        if (chatbotHost && chatbotHost.shadowRoot) {
+            const modalOverlay = chatbotHost.shadowRoot.querySelector('.mode-selection-modal-overlay');
+            if (modalOverlay) {
+                modalOverlay.remove();
+            }
+        }
+    }
 }
 
 
@@ -722,4 +835,4 @@ if (typeof window !== 'undefined') {
     console.log('È una funzione?', typeof window.WineExperience === 'function');
 } else {
     console.error('window non è definito!');
-} 
+}

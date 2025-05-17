@@ -1,0 +1,150 @@
+/* Stili per la Modale di Selezione Livello */
+
+.mode-selection-modal-overlay {
+    position: fixed;
+    bottom: 120px;
+    right: 20px;
+    width: 390px;
+    height: 600px;
+    z-index: 9999999;
+    border-radius: var(--chatbot-border-radius-container);
+    font-family: var(--chatbot-font);
+    overflow: hidden;
+}
+
+.mode-selection-modal {
+    background-color: #fff;
+    border-radius: var(--chatbot-border-radius-container);
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow-y: auto;
+    color: #333;
+    height: 100%;
+}
+
+.mode-card-image {
+    height: 120px;
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Stili per il Titolo della Modale */
+.mode-selection-modal h2 {
+    font-size: 22px;
+    /* Dimensione del font per il titolo */
+    font-weight: 600;
+    /* Leggermente bold */
+    color: #333;
+    /* Colore del testo scuro */
+    margin-top: 0;
+    /* Rimuovi margine superiore predefinito */
+    margin-bottom: 25px;
+    /* Spazio sotto il titolo */
+}
+
+/* Contenitore per le Card di Selezione */
+.mode-cards-container {
+    display: flex;
+    justify-content: space-between;
+    /* Spazio tra le card */
+    gap: 15px;
+    /* Spazio tra le card se lo preferisci a space-between */
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+/* Stili base per le Card di Selezione */
+.mode-card {
+    flex: 1;
+    /* Le card si dividono lo spazio disponibile */
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    /* Bordo leggero */
+    border-radius: var(--chatbot-border-radius-input, 8px);
+    /* Usa variabile o fallback */
+    background-color: #f9f9f9;
+    /* Sfondo leggermente grigio */
+    color: var(--chatbot-text-primary, #333);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 160px;
+    /* Altezza minima per uniformità */
+}
+
+.mode-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--chatbot-accent-color, #8B0000);
+    /* Colore accento per il bordo in hover */
+    background-color: #fff;
+}
+
+.mode-card.beginner-card:hover {
+    /* Potresti aggiungere un colore specifico per beginner se vuoi */
+    /* background-color: #e6f7ff; */
+}
+
+.mode-card.expert-card:hover {
+    /* Potresti aggiungere un colore specifico per expert se vuoi */
+    /* background-color: #fff0e6; */
+}
+
+/* Per dare un feedback al click, anche se breve */
+.mode-card:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Stili per il Bottone Annulla/Chiudi */
+.mode-selection-close-button {
+    background-color: var(--chatbot-header-bg);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block;
+    transition: all 0.2s ease-in-out;
+    margin-top: 10px;
+    /* Spazio sopra il bottone */
+    width: 100%;
+}
+
+.mode-selection-close-button:hover {
+    background-color: #6B0000;
+
+}
+
+@media (max-width: 768px) {
+    .mode-selection-modal-overlay {
+        width: 100%;
+        height: 90%;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 99999;
+    }
+}
