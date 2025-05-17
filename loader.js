@@ -1,6 +1,6 @@
 (function () {
     // Flag per caricamento locale vs remoto
-    const LOAD_REMOTELY = true; // Imposta a true per caricare da GitHub Pages
+    const LOAD_REMOTELY = false; // Imposta a true per caricare da GitHub Pages
 
     // Definisci BASE_URL dinamicamente
     const BASE_URL = LOAD_REMOTELY ? "https://zeroskill830.github.io/chatbot" : ".";

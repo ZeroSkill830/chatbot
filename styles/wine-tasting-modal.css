@@ -23,6 +23,7 @@
     overflow-y: auto;
     color: #333;
     height: 100%;
+    width: 100%;
 }
 
 .wine-modal-title {
